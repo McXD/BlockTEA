@@ -1,18 +1,25 @@
+import { useState, useEffect } from "react";
 import { Button, Space, Table } from "antd";
-
-const items = [
-    {
-        key: "1",
-        label: "Action 1",
-    },
-    {
-        key: "2",
-        label: "Action 2",
-    },
-];
+import config from "../../config";
+import axios from "axios";
 
 const App = () => {
-    const expandedRowRender = () => {
+    const [smartContracts, setSmartContracts] = useState([]);
+
+    useEffect(() => {
+        const fetchContracts = async () => {
+            try {
+                const response = await axios.get(`${config.apiBaseUrl}/api/contracts`);
+                setSmartContracts(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchContracts().then(r => console.log(r));
+    }, []);
+
+    const expandedRowRender = (record) => {
         const columns = [
             { title: "Name", dataIndex: "name", key: "name" },
             { title: "Detail", dataIndex: "detail", key: "detail" },
@@ -22,60 +29,38 @@ const App = () => {
                 key: "operation",
                 render: () => (
                     <Space size="middle">
-                        <a>Edit</a>
-                        <a>Delete</a>
                         <a>Configure</a>
                     </Space>
                 ),
             },
         ];
 
-        const data = [];
-        for (let i = 0; i < 3; ++i) {
-            data.push({
-                key: i.toString(),
-                name: "Event " + (i + 1),
-                detail: "Event detail " + (i + 1),
-                parameters: "Param1, Param2, Param3",
-            });
-        }
-        return <Table columns={columns} dataSource={data} pagination={false} />;
+        return (
+            <Table
+                columns={columns}
+                dataSource={record.events}
+                pagination={false}
+                rowKey="name"
+            />
+        );
     };
 
     const columns = [
-        { title: "Name", dataIndex: "name", key: "name" },
-        { title: "Address", dataIndex: "address", key: "address" },
-        { title: "Detail", dataIndex: "detail", key: "detail" },
+        { title: "Name", dataIndex: "contract_name", key: "contract_name" },
+        { title: "Address", dataIndex: "contract_address", key: "contract_address" },
         { title: "Owner", dataIndex: "owner", key: "owner" },
-        {
-            title: "Deployment Date",
-            dataIndex: "deploymentDate",
-            key: "deploymentDate",
-        },
+        { title: "ABI", dataIndex: "contract_abi", key: "contract_abi" },
         {
             title: "Action",
             key: "operation",
             render: () => (
                 <Space size="middle">
-                    <a>Add Event</a>
                     <a>Edit</a>
                     <a>Delete</a>
                 </Space>
             ),
         },
     ];
-
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-        data.push({
-            key: i.toString(),
-            name: "Contract " + (i + 1),
-            address: "0x" + (i + 1),
-            detail: "Contract detail " + (i + 1),
-            owner: "0xOwner" + (i + 1),
-            deploymentDate: "2022-01-01",
-        });
-    }
 
     return (
         <>
@@ -84,15 +69,12 @@ const App = () => {
                 columns={columns}
                 expandable={{
                     expandedRowRender,
-                    defaultExpandedRowKeys: ["0"],
                 }}
-                dataSource={data}
+                dataSource={smartContracts}
                 size="small"
+                rowKey="contract_address"
             />
-            <Button
-                type="primary"
-                style={{ marginTop: 16 }}
-            >
+            <Button type="primary" style={{ marginTop: 16 }}>
                 Add Contract
             </Button>
         </>

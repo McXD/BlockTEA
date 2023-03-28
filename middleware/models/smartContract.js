@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const smartContractSchema = new Schema({
     contract_name: {
@@ -20,6 +21,8 @@ const smartContractSchema = new Schema({
         required: true,
     }
 });
+
+smartContractSchema.plugin(mongoosePaginate);
 
 const SmartContract = model("SmartContract", smartContractSchema);
 

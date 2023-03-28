@@ -5,6 +5,43 @@ const Web3 = require("web3")
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
 
+// Get all smart contracts with pagination
+router.get("/", async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+
+        const options = {
+            page: page,
+            limit: limit,
+            sort: { createdAt: -1 }, // sort by createdAt in descending order
+        };
+
+        const result = await SmartContract.paginate({}, options);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Get a single smart contract definition
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const contract = await SmartContract.findById(id);
+
+        if (!contract) {
+            return res.status(404).json({ error: "Smart contract not found" });
+        }
+
+        res.status(200).json(contract);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 // Add a new smart contract definition
 router.post("/", async (req, res) => {
     console.log(req.body);

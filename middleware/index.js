@@ -5,6 +5,7 @@ const pino = require('pino')
 const pinoHttp = require('pino-http')
 const bodyParser = require('body-parser');
 const connect = require('./db');
+const cors = require('cors');
 
 module.exports = function main (options, cb) {
   // Set default options
@@ -47,6 +48,7 @@ module.exports = function main (options, cb) {
 
   // Common middleware
   // app.use(/* ... */)
+  app.use(cors())
   app.use(pinoHttp({ logger }))
 
   // Parse body

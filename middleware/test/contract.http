@@ -1,3 +1,7 @@
+### Get all smart contracts
+GET http://localhost:8000/api/contracts
+
+
 ### Add a new smart contract definition
 POST http://localhost:8000/contracts
 Content-Type: application/json
