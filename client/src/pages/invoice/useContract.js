@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
-import Web3 from "web3";
 import EnterpriseInvoiceABI from "../../contracts/ABI/EnterpriseInvoice.json";
 import contractAddress from "../../contracts/deployments/EnterpriseInvoice.json";
 

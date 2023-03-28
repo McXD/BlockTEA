@@ -8,7 +8,6 @@ const { confirm } = Modal;
 
 const BuyerPage = () => {
   const [invoices, setInvoices] = useState([]);
-  const [sellers, setSellers] = useState([]);
   const [newSellerAddress, setNewSellerAddress] = useState("")
   const [loading, setLoading] = useState(true);
   const { contract, addSeller, removeSeller, payInvoice } = useContract();

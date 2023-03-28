@@ -6,4 +6,5 @@ module.exports = function (app, opts) {
   // Setup routes, middleware, and handlers
   app.get('/', simple)
   app.get('/configured', configured(opts))
+  app.use('/contracts', require('./handlers/contract'))
 }

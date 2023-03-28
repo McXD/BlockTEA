@@ -3,6 +3,8 @@ const express = require('express')
 const httpErrors = require('http-errors')
 const pino = require('pino')
 const pinoHttp = require('pino-http')
+const bodyParser = require('body-parser');
+const connect = require('./db');
 
 module.exports = function main (options, cb) {
   // Set default options
@@ -46,7 +48,10 @@ module.exports = function main (options, cb) {
   // Common middleware
   // app.use(/* ... */)
   app.use(pinoHttp({ logger }))
-      
+
+  // Parse body
+  app.use(bodyParser.json());
+
   // Register routes
   // @NOTE: require here because this ensures that even syntax errors
   // or other startup related errors are caught logged and debuggable.
@@ -70,6 +75,12 @@ module.exports = function main (options, cb) {
       }]
     })
   })
+
+  // Connect to database
+  connect()
+    .then(() => console.log('MongoDB Connected...'))
+    .catch(err => console.log(err));
+
 
   // Start server
   server = app.listen(opts.port, opts.host, function (err) {

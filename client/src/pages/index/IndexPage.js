@@ -7,6 +7,12 @@ function IndexPage() {
       <nav>
         <ul>
           <li>
+            <Link to="/ledger">Ledger</Link>
+          </li>
+          <li>
+            <Link to="/ledger/contract">Contract</Link>
+          </li>
+          <li>
             <Link to="/invoice/buyer">Buyer Invoice</Link>
           </li>
           <li>
