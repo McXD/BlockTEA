@@ -62,6 +62,7 @@ const useContract = () => {
       await contract.methods.createInvoice(amount, description).send({ from: account });
     } catch (error) {
       console.log("Error creating invoice:", error);
+      throw error;
     }
   };
 

@@ -12,14 +12,15 @@ const SellerPage = () => {
   const handleSubmit = async () => {
     try {
       await createInvoice(amount, description);
-      notification.success({ message: "Invoice submitted successfully!" });
-      setAmount("");
-      setDescription("");
     } catch (error) {
       console.error(error);
       notification.error({ message: "Failed to submit the invoice" });
+      return;
     }
-  };
+    notification.success({ message: "Invoice submitted successfully!" });
+    setAmount("");
+    setDescription("");
+};
 
   return (
     <div

@@ -58,4 +58,8 @@ contract EnterpriseInvoice is AccessControl {
         require(invoiceId < invoices.length, "Invoice does not exist");
         return invoices[invoiceId];
     }
+
+    function getInvoiceCount() public view returns (uint256) {
+        return invoices.length;
+    }
 }

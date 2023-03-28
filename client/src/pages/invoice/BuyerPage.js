@@ -16,6 +16,23 @@ const BuyerPage = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       // Fetch invoices and sellers from the contract
+        if (!contract) return;
+
+        // Get the total number of invoices
+        const invoiceCount = await contract.methods.getInvoiceCount().call();
+        console.log("Invoice count:", invoiceCount);
+
+
+        // Fetch all invoices
+        const invoices = [];
+        for (let i = 0; i < invoiceCount; i++) {
+          const invoice = await contract.methods.getInvoice(i).call();
+          invoices.push(invoice);
+        }
+
+        setInvoices(invoices);
+        setLoading(false);
+        console.log("Invoices:", invoices);
     };
 
     fetchInvoices();
@@ -26,7 +43,12 @@ const BuyerPage = () => {
       title: "Do you want to mark this invoice as paid?",
       icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await payInvoice(record.id);
+        const placeholderPaymentHash =
+          "0x" +
+          "1234567890123456789012345678901234567890123456789012345678901234";
+        await payInvoice(
+          record.id, placeholderPaymentHash
+        );
         // Refresh the invoice list after the payment is marked
       },
     });
