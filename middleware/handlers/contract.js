@@ -16,7 +16,8 @@ router.get("/", async (req, res) => {
             sort: { createdAt: -1 }, // sort by createdAt in descending order
         };
 
-        const result = await SmartContract.paginate({}, options);
+        // TODO: Pagination
+        const result = await SmartContract.find({}, null, options);
         res.status(200).json(result);
     } catch (error) {
         console.error(error);

@@ -11,45 +11,52 @@ const App = () => {
             try {
                 const response = await axios.get(`${config.apiBaseUrl}/api/contracts`);
                 setSmartContracts(response.data);
+                console.log(response.data)
             } catch (error) {
                 console.error(error);
             }
         };
 
-        fetchContracts().then(r => console.log(r));
+        fetchContracts();
     }, []);
 
     const expandedRowRender = (record) => {
+        const events = record.contract_abi.filter(item => item.type === 'event');
+
+        const formattedEvents = events.map((event, index) => {
+            const parameters = event.inputs.length > 0
+                ? event.inputs.map(input => `${input.name} (${input.type})`).join(', ')
+                : 'No parameters';
+
+            return {
+                key: index.toString(),
+                name: event.name,
+                parameters
+            };
+        });
+
         const columns = [
-            { title: "Name", dataIndex: "name", key: "name" },
-            { title: "Detail", dataIndex: "detail", key: "detail" },
-            { title: "Parameters", dataIndex: "parameters", key: "parameters" },
+            { title: 'Name', dataIndex: 'name', key: 'name' },
+            { title: 'Parameters', dataIndex: 'parameters', key: 'parameters' },
             {
-                title: "Action",
-                key: "operation",
+                title: 'Action',
+                key: 'operation',
                 render: () => (
-                    <Space size="middle">
+                    <Space size='middle'>
                         <a>Configure</a>
                     </Space>
                 ),
             },
         ];
 
-        return (
-            <Table
-                columns={columns}
-                dataSource={record.events}
-                pagination={false}
-                rowKey="name"
-            />
-        );
+        return <Table columns={columns} dataSource={formattedEvents} pagination={false} />;
     };
+
 
     const columns = [
         { title: "Name", dataIndex: "contract_name", key: "contract_name" },
         { title: "Address", dataIndex: "contract_address", key: "contract_address" },
         { title: "Owner", dataIndex: "owner", key: "owner" },
-        { title: "ABI", dataIndex: "contract_abi", key: "contract_abi" },
         {
             title: "Action",
             key: "operation",
