@@ -1,6 +1,7 @@
 import {Button, Table, Form, Input, Select, Modal} from "antd";
 import {useState, useEffect} from "react";
 import config from "../../config";
+import "./Ledger.css";
 
 const {Option} = Select;
 
@@ -48,9 +49,15 @@ const App = () => {
                 title: "Transaction Hash",
                 dataIndex: ["event", "transaction_hash"],
                 key: "transactionHash",
+                render: (transactionHash) => (
+                    <a href={`${config.etherscanUrl}/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">
+                        {transactionHash}
+                    </a>
+                ),
             },
-            {title: "Entry Type", dataIndex: "entry_type", key: "entry_type"},
-            {title: "Amount", dataIndex: "amount", key: "amount"},
+            { title: "Debit", key: "debit", render: (_, row) => row.entry_type === "debit" ? row.amount : null },
+            { title: "Credit", key: "credit", render: (_, row) => row.entry_type === "credit" ? row.amount : null },
+
         ];
 
         return (
@@ -103,6 +110,7 @@ const App = () => {
         <>
             <h1>Ledger</h1>
             <Table
+                className="ledger-table" // Add the className to the main table
                 columns={columns}
                 dataSource={accounts}
                 expandable={{
@@ -110,6 +118,7 @@ const App = () => {
                     rowExpandable: (record) => record.entries.length > 0,
                 }}
                 size="small"
+                rowKey="_id"
             />
             <Button type="primary" onClick={showModal} style={{ marginTop: 16 }}>
                 Add Account

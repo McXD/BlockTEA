@@ -1,0 +1,26 @@
+/* LedgerTable.css */
+.ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ledger-table thead th {
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 12px;
+    border-bottom: 1px solid #e5e5e5;
+    font-weight: 600;
+}
+
+.ledger-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.ledger-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.ledger-table tbody td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e5e5;
+}

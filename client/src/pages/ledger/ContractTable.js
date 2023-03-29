@@ -79,7 +79,12 @@ const App = () => {
 
     const columns = [
         { title: "Name", dataIndex: "contract_name", key: "contract_name" },
-        { title: "Address", dataIndex: "contract_address", key: "contract_address" },
+        {
+            title: "Address", dataIndex: "contract_address", key: "contract_address",
+            render: (address) => <a href={`${config.etherscanUrl}/address/${address}`} target="_blank" rel="noopener noreferrer">
+                {address}
+            </a>
+        },
         { title: "Owner", dataIndex: "owner", key: "owner" },
         {
             title: "Action",
