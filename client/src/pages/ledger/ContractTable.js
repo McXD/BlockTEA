@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Button, Space, Table } from "antd";
+import { Button, Space, Table, Form, Input, Modal } from "antd";
 import config from "../../config";
 import axios from "axios";
 
 const App = () => {
     const [smartContracts, setSmartContracts] = useState([]);
+    const [isAddContractModalVisible, setIsAddContractModalVisible] = useState(false);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         const fetchContracts = async () => {
@@ -69,6 +71,34 @@ const App = () => {
         },
     ];
 
+    const handleAddContract = async (values) => {
+        try {
+            const parsedAbi = JSON.parse(values.abi);
+            const contractData = {
+                ...values,
+                abi: parsedAbi,
+            };
+
+            const response = await axios.post(`${config.apiBaseUrl}/api/contracts`, contractData);
+            const newSmartContract = response.data;
+            setSmartContracts([...smartContracts, newSmartContract]);
+            setIsAddContractModalVisible(false);
+            form.resetFields();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+    const showAddContractModal = () => {
+        setIsAddContractModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsAddContractModalVisible(false);
+    };
+
+
     return (
         <>
             <h1>Smart Contracts</h1>
@@ -81,9 +111,61 @@ const App = () => {
                 size="small"
                 rowKey="contract_address"
             />
-            <Button type="primary" style={{ marginTop: 16 }}>
+            <Button type="primary" style={{ marginTop: 16 }} onClick={showAddContractModal}>
                 Add Contract
             </Button>
+            <Modal
+                title="Add Contract"
+                visible={isAddContractModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={handleAddContract}
+                >
+                    <Form.Item
+                        label="Name"
+                        name="name"
+                        rules={[{ required: true, message: 'Please input the contract name!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Address"
+                        name="address"
+                        rules={[{ required: true, message: 'Please input the contract address!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Owner"
+                        name="owner"
+                        rules={[{ required: true, message: 'Please input the contract address!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="ABI"
+                        name="abi"
+                        rules={[{ required: true, message: 'Please input the contract ABI!' }]}
+                    >
+                        <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item>
+                        <Space>
+                            <Button type="primary" htmlType="submit">
+                                Add
+                            </Button>
+                            <Button onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
         </>
     );
 };
