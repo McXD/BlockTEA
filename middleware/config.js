@@ -1,5 +1,5 @@
 const config = {
-    apiBaseUrl: "http://localhost:8000",
+    web3Provider: "http://localhost:8545",
 };
 
 export default config;

@@ -3,11 +3,6 @@ const { Schema, model } = require("mongoose");
 const accountTypes = ["asset", "liability", "equity", "income", "expense"];
 
 const accountSchema = new Schema({
-    id: {
-        type: Number,
-        unique: true,
-        required: true,
-    },
     name: {
         type: String,
         unique: true,

@@ -3,11 +3,6 @@ const { Schema, model } = require("mongoose");
 const entryTypes = ["debit", "credit"];
 
 const journalEntrySchema = new Schema({
-    id: {
-        type: Number,
-        unique: true,
-        required: true,
-    },
     account_id: {
         type: Schema.Types.Number,
         ref: "Account",

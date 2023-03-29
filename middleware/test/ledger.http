@@ -1,0 +1,36 @@
+# List all accounts
+GET http://localhost:8000/api/ledger/accounts
+Content-Type: application/json
+
+###
+
+# Add an account
+POST http://localhost:8000/api/ledger/accounts
+Content-Type: application/json
+
+{
+  "name": "Account Payable",
+  "type": "liability"
+}
+
+###
+
+# Update an account
+PUT http://localhost:8000/api/ledger/accounts/ACCOUNT_ID
+Content-Type: application/json
+
+{
+  "name": "Updated Account Name"
+}
+
+###
+
+# Delete an account
+DELETE http://localhost:8000/api/ledger/accounts/ACCOUNT_ID
+Content-Type: application/json
+
+###
+
+# List all journal entries under the account
+GET http://localhost:8000/api/ledger/accounts/642396d5945bb749ab0b06b5/journalEntries
+Content-Type: application/json
