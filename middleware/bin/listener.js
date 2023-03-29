@@ -1,8 +1,8 @@
-const ethers = require('ethers');
 const SmartContract = require('../models/smartContract');
 const EventConfiguration = require('../models/eventConfiguration');
 const JournalEntry = require('../models/journalEntry');
 const BlockchainEvent = require('../models/blockchainEvent');
+const Account = require('../models/account');
 const Web3 = require('web3');
 const web3Provider = require('../config').web3Provider;
 const web3 = new Web3(new Web3.providers.HttpProvider(web3Provider));
@@ -22,8 +22,6 @@ async function processEvent(eventName, args, contract) {
         return;
     }
 
-    // pass if the transaction is already processed
-
     // Save the event
     const eventData = {
         id: args._id,
@@ -39,7 +37,7 @@ async function processEvent(eventName, args, contract) {
 
     // Process the event based on the eventEffects configuration
     for (const effect of eventConfig.eventEffects) {
-        const { accountId, amountField, operation } = effect;
+        const {accountId, amountField, operation} = effect;
         const amount = args[amountField];
 
         // Update the associated account based on the operation (debit or credit)
@@ -55,6 +53,37 @@ async function processEvent(eventName, args, contract) {
             .catch((err) => {
                 console.log(err);
             });
+
+        const getAmountSign = (operation, accountType) => {
+            if (operation === "debit") {
+                if (["asset", "expense"].includes(accountType)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else {
+                if (["liability", "equity", "income"].includes(accountType)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        };
+
+        const account = await Account.findById(accountId);
+
+        // Update the balance of the account
+        const ret = Account.findByIdAndUpdate(
+            accountId,
+            {
+                $inc: {
+                    balance: amount * getAmountSign(operation, account.type),
+                },
+            },
+            {new: true}
+        ).then((result) => {
+            console.log('Account Updated: ', result);
+        });
     }
 }
 
@@ -74,7 +103,7 @@ async function setupEventListeners() {
             continue;
         }
 
-        const { contract_address, contract_abi } = contractData;
+        const {contract_address, contract_abi} = contractData;
         const contract = new web3.eth.Contract(contract_abi, contract_address);
 
         const eventAbi = contract._jsonInterface.find(
@@ -91,7 +120,7 @@ async function setupEventListeners() {
             const eventFilter = {
                 address: contract_address,
                 topics: [eventAbi.signature],
-                fromBlock: 'latest',
+                fromBlock: '0',
             };
 
             // Start polling for new events
@@ -120,7 +149,6 @@ async function setupEventListeners() {
         }
     }
 }
-
 
 
 // Initialize mongoose connection

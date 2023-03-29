@@ -50,6 +50,7 @@ const App = () => {
                 key: "transactionHash",
             },
             {title: "Entry Type", dataIndex: "entry_type", key: "entry_type"},
+            {title: "Amount", dataIndex: "amount", key: "amount"},
         ];
 
         return (

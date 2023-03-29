@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Input, Space, Typography } from "antd";
+import {Button, Table, Modal, Input, Space, Typography, notification} from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import useContract from "./useContract"; // Assuming you have a custom hook to interact with the smart contract
 
@@ -45,9 +45,18 @@ const BuyerPage = () => {
         const placeholderPaymentHash =
           "0x" +
           "1234567890123456789012345678901234567890123456789012345678901234";
-        await payInvoice(
-          record.id, placeholderPaymentHash
-        );
+        payInvoice(record.id, placeholderPaymentHash)
+            .then(() => {
+            // Refresh the invoice list after the payment is marked
+          setInvoices(
+              invoices.map((invoice) =>
+                  invoice.id === record.id ? { ...invoice, paid: true } : invoice
+              )
+          );
+        }).catch((e) => {
+          // show notification
+          notification.error({ message: "Failed to mark the invoice as paid" });
+        });
         // Refresh the invoice list after the payment is marked
       },
     });

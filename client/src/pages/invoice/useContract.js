@@ -73,6 +73,7 @@ const useContract = () => {
         .send({ from: account });
     } catch (error) {
       console.log("Error paying invoice:", error);
+      throw error;
     }
   };
 
