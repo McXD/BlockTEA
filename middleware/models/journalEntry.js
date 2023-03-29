@@ -4,12 +4,12 @@ const entryTypes = ["debit", "credit"];
 
 const journalEntrySchema = new Schema({
     account_id: {
-        type: Schema.Types.Number,
+        type: Schema.Types.ObjectId,
         ref: "Account",
         required: true,
     },
     event_id: {
-        type: Schema.Types.Number,
+        type: Schema.Types.ObjectId,
         ref: "BlockchainEvent",
         required: true,
     },

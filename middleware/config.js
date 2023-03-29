@@ -1,5 +1,5 @@
 const config = {
-    web3Provider: "http://localhost:8545",
+    web3Provider: "http://127.0.0.1:8545",
 };
 
-export default config;
+module.exports = config;
