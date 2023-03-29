@@ -1,167 +1,168 @@
-import { Button, Table } from "antd";
+import {Button, Table, Form, Input, Select, Modal} from "antd";
+import {useState, useEffect} from "react";
+import config from "../../config";
+
+const {Option} = Select;
 
 const App = () => {
-  const expandedRowRender = (record) => {
+    const [accounts, setAccounts] = useState([]);
+    const [form] = Form.useForm();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const fetchData = async () => {
+        const accountsResponse = await fetch(`${config.apiBaseUrl}/api/ledger/accounts`);
+        const accountsData = await accountsResponse.json();
+
+        const accountsWithJournalEntries = await Promise.all(
+            accountsData.map(async (account) => {
+                const journalEntriesResponse = await fetch(
+                    `${config.apiBaseUrl}/api/ledger/accounts/${account._id}/journalEntries`
+                );
+                const journalEntriesData = await journalEntriesResponse.json();
+
+                const journalEntriesWithEvents = await Promise.all(
+                    journalEntriesData.map(async (entry) => {
+                        const eventResponse = await fetch(`${config.apiBaseUrl}/api/ledger/events/${entry.event_id}`);
+                        const eventData = await eventResponse.json();
+                        return {...entry, event: eventData};
+                    })
+                );
+
+                return {...account, entries: journalEntriesWithEvents};
+            })
+        );
+
+        console.log(accountsWithJournalEntries)
+        setAccounts(accountsWithJournalEntries);
+    };
+
+    useEffect(() => {
+        fetchData().then(r => console.log("Accounts fetched"));
+    }, []);
+
+    const expandedRowRender = (record) => {
+        const columns = [
+            {title: "Event ID", dataIndex: "event_id", key: "eventId"},
+            {title: "Event Name", dataIndex: ["event", "name"], key: "eventName"},
+            {
+                title: "Transaction Hash",
+                dataIndex: ["event", "transaction_hash"],
+                key: "transactionHash",
+            },
+            {title: "Entry Type", dataIndex: "entry_type", key: "entry_type"},
+        ];
+
+        return (
+            <Table
+                columns={columns}
+                dataSource={record.entries}
+                pagination={false}
+                size="small"
+            />
+        );
+    };
+
     const columns = [
-      { title: "Event ID", dataIndex: "eventId", key: "eventId" },
-      { title: "Event Name", dataIndex: "eventName", key: "eventName" },
-      {
-        title: "Smart Contract Name",
-        dataIndex: "smartContractName",
-        key: "smartContractName",
-      },
-      {
-        title: "Transaction Hash",
-        dataIndex: "transactionHash",
-        key: "transactionHash",
-      },
-      { title: "Amount", dataIndex: "amount", key: "amount" },
-      { title: "Entry Type", dataIndex: "entryType", key: "entryType" },
-      { title: "Notes", dataIndex: "notes", key: "notes" },
+        {title: "Account ID", dataIndex: "_id", key: "id"},
+        {title: "Account Name", dataIndex: "name", key: "name"},
+        {title: "Account Type", dataIndex: "type", key: "type"},
+        {title: "Balance", dataIndex: "balance", key: "balance"},
     ];
 
+    const createAccount = async (values) => {
+        const {accountName, accountType} = values;
+
+        const response = await fetch("http://localhost:8000/api/ledger/accounts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({name: accountName, type: accountType}),
+        });
+
+        const newAccountData = await response.json();
+        fetchData(); // Refetch accounts data to display the new account
+        form.resetFields(); // Reset form fields
+    };
+
+    const onFinish = (values) => {
+        createAccount(values).then(r => console.log("Account created"));
+        setIsModalVisible(false); // Close the modal after creating the account
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
     return (
-      <Table
-        columns={columns}
-        dataSource={record.entries}
-        pagination={false}
-        size="small"
-      />
+        <>
+            <h1>Ledger</h1>
+            <Table
+                columns={columns}
+                dataSource={accounts}
+                expandable={{
+                    expandedRowRender,
+                    rowExpandable: (record) => record.entries.length > 0,
+                }}
+                size="small"
+            />
+            <Button type="primary" onClick={showModal} style={{ marginTop: 16 }}>
+                Add Account
+            </Button>
+            <Modal
+                title="Create New Account"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onFinish}
+                >
+                    <Form.Item
+                        name="accountName"
+                        label="Account Name"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please input the account name!",
+                            },
+                        ]}
+                    >
+                        <Input placeholder="Account Name"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="accountType"
+                        label="Account Type"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select the account type!",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="Account Type">
+                            <Option value="asset">Asset</Option>
+                            <Option value="liability">Liability</Option>
+                            <Option value="equity">Equity</Option>
+                            <Option value="income">Income</Option>
+                            <Option value="expense">Expense</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Add Account
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     );
-  };
-
-  const columns = [
-    { title: "Account ID", dataIndex: "accountId", key: "accountId" },
-    { title: "Account Name", dataIndex: "accountName", key: "accountName" },
-    { title: "Account Type", dataIndex: "accountType", key: "accountType" },
-    { title: "Balance", dataIndex: "balance", key: "balance" },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      accountId: "1001",
-      accountName: "Accounts Receivable",
-      accountType: "Asset",
-      balance: 2000,
-      entries: [
-        {
-          key: "1-1",
-          eventId: "EVT-001",
-          eventName: "InvoiceCreated",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0x123abc456def...",
-          amount: 1000,
-          entryType: "Debit",
-          notes: "Invoice 1001",
-        },
-        {
-          key: "1-2",
-          eventId: "EVT-002",
-          eventName: "InvoiceCreated",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0x789ghi012jkl...",
-          amount: 1000,
-          entryType: "Debit",
-          notes: "Invoice 1002",
-        },
-      ],
-    },
-    {
-      key: "2",
-      accountId: "2001",
-      accountName: "Revenue",
-      accountType: "Income",
-      balance: -2000,
-      entries: [
-        {
-          key: "2-1",
-          eventId: "EVT-001",
-          eventName: "InvoiceCreated",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0x123abc456def...",
-          amount: 1000,
-          entryType: "Credit",
-          notes: "Invoice 1001",
-        },
-        {
-          key: "2-2",
-          eventId: "EVT-002",
-          eventName: "InvoiceCreated",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0x789ghi012jkl...",
-          amount: 1000,
-          entryType: "Credit",
-          notes: "Invoice 1002",
-        },
-      ],
-    },
-    {
-      key: "3",
-      accountId: "3001",
-      accountName: "Cash",
-      accountType: "Asset",
-      balance: 800,
-      entries: [
-        {
-          key: "3-1",
-          eventId: "EVT-003",
-          eventName: "InvoicePaid",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0xabc123def456...",
-          amount: 800,
-          entryType: "Debit",
-          notes: "Payment for Invoice 1001",
-        },
-      ],
-    },
-    {
-      key: "4",
-      accountId: "4001",
-      accountName: "Accounts Payable",
-      accountType: "Liability",
-      balance: -800,
-      entries: [
-        {
-          key: "4-1",
-          eventId: "EVT-003",
-          eventName: "InvoicePaid",
-          smartContractName: "InvoiceContract",
-          transactionHash: "0xabc123def456...",
-          amount: 800,
-          entryType: "Credit",
-          notes: "Payment for Invoice 1001",
-        },
-      ],
-    },
-  ];
-
-  const handleAddAccount = () => {
-    console.log("Add Account");
-    // Implement account creation functionality here
-  };
-
-  return (
-    <>
-      <h1>Ledger</h1>
-      <Table
-        columns={columns}
-        dataSource={data}
-        expandable={{
-          expandedRowRender,
-          rowExpandable: (record) => record.entries.length > 0,
-        }}
-        size="small"
-      />
-      <Button
-        type="primary"
-        onClick={handleAddAccount}
-        style={{ marginTop: 16 }}
-      >
-        Add Account
-      </Button>
-    </>
-  );
 };
 
 export default App;

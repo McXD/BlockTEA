@@ -22,6 +22,8 @@ async function processEvent(eventName, args, contract) {
         return;
     }
 
+    // pass if the transaction is already processed
+
     // Save the event
     const eventData = {
         id: args._id,
@@ -94,8 +96,6 @@ async function setupEventListeners() {
 
             // Start polling for new events
             setInterval(async () => {
-                console.log("Start listening...");
-
                 // Get new logs using the event filter
                 const logs = await web3.eth.getPastLogs(eventFilter);
 
@@ -104,6 +104,13 @@ async function setupEventListeners() {
                     // Parse the received log using the contract ABI
                     const parsedEvent = web3.eth.abi.decodeLog(eventAbi.inputs, log.data, log.topics.slice(1));
                     parsedEvent.transactionHash = log.transactionHash; // Add transactionHash to the parsed event
+
+                    // skip if the transaction is already processed
+                    const isProcessed = await BlockchainEvent.findOne({transaction_hash: parsedEvent.transactionHash});
+                    if (isProcessed) {
+                        continue;
+                    }
+
                     console.log("Catch event: ", parsedEvent);
                     await processEvent(eventName, parsedEvent, contractData);
                 }

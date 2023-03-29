@@ -55,7 +55,7 @@ router.put("/accounts/:id", async (req, res) => {
 // List all the journal entries under the account
 router.get("/accounts/:id/journalEntries", async (req, res) => {
     try {
-        const journalEntries = await JournalEntry.find({ account: req.params.id });
+        const journalEntries = await JournalEntry.find({ account_id: req.params.id });
         res.status(200).json(journalEntries);
     } catch (error) {
         console.error(error);
