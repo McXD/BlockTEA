@@ -46,7 +46,7 @@ module.exports = function main (options, cb) {
   const app = express()
 
 
-  // Common middleware
+  // Common backend
   // app.use(/* ... */)
   app.use(cors())
   app.use(pinoHttp({ logger }))
