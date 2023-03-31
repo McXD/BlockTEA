@@ -42,6 +42,7 @@ def load_callback_functions(callbacks_dir):
             module_name = file[:-3]  # Remove the '.py' extension
             module = importlib.import_module(f"callbacks.{module_name}")
             callback_functions.append(module.process_event)
+            print(f"Loaded callback function from module '{module_name}'")
 
     return callback_functions
 
@@ -77,7 +78,7 @@ def get_last_processed_block_number(db):
 
 def poll_events():
     start_block = get_last_processed_block_number(db)
-    print(f"Starting from block {start_block}...")
+    print(f"Starting from block {start_block}")
     event_filters = create_event_filters(start_block, contract_abi_map, contract_address_map)
     callback_functions = load_callback_functions('callbacks')
 
@@ -120,7 +121,7 @@ def poll_events():
 
                     # Call all the callback functions
                     for callback_function in callback_functions:
-                        callback_function(event, w3, contract_abi_map)
+                        callback_function(event, w3, contract_abi_map, contract_address_map)
 
         # Update the last processed block number in the database
         db['last_block'].update_one({}, {'$set': {'number': end_block}})
@@ -130,5 +131,5 @@ def poll_events():
 
 
 if __name__ == "__main__":
-    print("Starting event listener...")
+    print("Starting event listener to {}".format(NETWORK_URL))
     poll_events()

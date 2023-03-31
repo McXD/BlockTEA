@@ -1,4 +1,4 @@
-def process_event(event, web3_env, contract_abi_map):
+def process_event(event, web3_env, contract_abi_map, contract_address_map):
     """
     Process an event with the given web3 environment and contract ABI map.
 
