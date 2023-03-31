@@ -18,6 +18,9 @@ function IndexPage() {
           <li>
             <Link to="/invoice/seller">Seller Invoice</Link>
           </li>
+          <li>
+            <Link to="/purchaseOrder">Purchase Order</Link>
+          </li>
         </ul>
       </nav>
     </div>

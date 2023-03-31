@@ -5,6 +5,8 @@ import InvoiceSeller from "./pages/invoice/SellerPage";
 import IndexPage from "./pages/index/IndexPage";
 import Ledger from "./pages/ledger/Ledger";
 import ContractTable from "./pages/ledger/ContractTable";
+import PurchaseOrderOwner from "./pages/purchaseOrder/Owner";
+import PurchaseOrderSeller from "./pages/purchaseOrder/Seller";
 
 
 function App() {
@@ -15,7 +17,9 @@ function App() {
         <Route path="/invoice/buyer" element={<InvoiceBuyer />} />
         <Route path="/invoice/seller" element={<InvoiceSeller />} />
         <Route path="/ledger" element={<Ledger />} />
-          <Route path="/ledger/contract" element={<ContractTable />} />
+        <Route path="/ledger/contract" element={<ContractTable />} />
+        <Route path="/purchaseOrder/owner" element={<PurchaseOrderOwner />} />
+        <Route path="/purchaseOrder/seller" element={<PurchaseOrderSeller />} />
       </Routes>
     </Router>
   );
