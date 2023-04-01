@@ -4,11 +4,11 @@ POST http://localhost:6000/createAsset
 Content-Type: application/json
 
 {
-  "assetID": "asset2",
+  "assetID": "asset4",
   "color": "blue",
   "size": 5,
   "owner": "Tom",
-  "appraisedValue": 6000
+  "appraisedValue": 1000
 }
 
 ###
@@ -17,7 +17,7 @@ POST http://localhost:6000/transferAsset
 Content-Type: application/json
 
 {
-  "assetID": "asset1",
+  "assetID": "asset3",
   "newOwner": "Jerry"
 }
 

@@ -1,5 +1,4 @@
 const xmlrpc = require('xmlrpc');
-const fs = require("fs");
 
 const odooConfig = {
     url: 'http://172.20.67.63:8069/',
@@ -23,19 +22,8 @@ function authenticate() {
     });
 }
 
-async function createJournalEntry(event) {
-    const accountMappings = JSON.parse(fs.readFileSync('account_mappings.json', 'utf8'));
+async function createJournalEntry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix) {
     const uid = await authenticate();
-
-    if (!accountMappings[event.eventName]) {
-        return Promise.resolve();
-    }
-
-    const [debitAccountId, creditAccountId] = accountMappings[event.eventName];
-    // number
-    const amount = Number(event.payload.AppraisedValue);
-    const txHash = event.transactionId
-    const date = new Date().toISOString().split('T')[0];
 
     return new Promise((resolve, reject) => {
         objectClient.methodCall(
@@ -54,13 +42,13 @@ async function createJournalEntry(event) {
                         line_ids: [
                             [0, 0, {
                                 account_id: debitAccountId,
-                                name: `FABRIC: ${event.eventName} - Debit`,
+                                name: `${namePrefix}: ${eventName} - Debit`,
                                 debit: amount,
                                 credit: 0.00,
                             }],
                             [0, 0, {
                                 account_id: creditAccountId,
-                                name: `FABRIC: ${event.eventName} - Credit`,
+                                name: `${namePrefix}: ${eventName} - Credit`,
                                 debit: 0.00,
                                 credit: amount,
                             }],
@@ -97,11 +85,6 @@ async function createJournalEntry(event) {
     });
 }
 
-const processEvent = async (event, network, contracts) => {
-    const journalEntryId = await createJournalEntry(event);
-    console.log(`Posted journal entry with ID ${journalEntryId}`);
-}
-
 module.exports = {
-    processEvent: processEvent,
-};
+    createJournalEntry: createJournalEntry,
+}

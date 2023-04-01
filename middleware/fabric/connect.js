@@ -10,6 +10,8 @@ const mspId = "Org2MSP";
 const cryptoPath = path.resolve(
   __dirname,
   "..",
+  "..",
+  "fabric",
   "test-network",
   "organizations",
   "peerOrganizations",
