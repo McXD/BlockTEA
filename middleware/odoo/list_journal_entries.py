@@ -10,9 +10,9 @@ common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(url))
 uid = common.authenticate(db, username, password, {})
 
 models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))
-accounts = models.execute_kw(db, uid, password, 'account.account', 'search_read', [
-                             []], {'fields': ['id', 'name']})
+journal_entries = models.execute_kw(db, uid, password, 'account.move', 'search_read', [
+                                    []], {'fields': ['name', 'date', 'ref', 'state', 'invoice_line_ids']})
 
-print('List of accounts:')
-for account in accounts:
-    print(account)
+print('List of journal entries:')
+for entry in journal_entries:
+    print(entry)

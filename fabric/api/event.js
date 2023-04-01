@@ -40,7 +40,7 @@ async function replayChaincodeEvents(network, startBlock) {
 
     const callbacksPath = path.join(__dirname, 'callbacks');
     // Load all callbacks from the callbacks directory, ignoring those start with "__"
-    const callbackFiles = fs.readdirSync(callbacksPath).filter((file) => !file.startsWith('__'));
+    const callbackFiles = fs.readdirSync(callbacksPath).filter((file) => !file.startsWith('__') && file.endsWith('.js'));
 
     const callbacks = callbackFiles.map((file) => require(path.join(callbacksPath, file)));
 
