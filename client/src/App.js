@@ -7,6 +7,7 @@ import Ledger from "./pages/ledger/Ledger";
 import ContractTable from "./pages/ledger/ContractTable";
 import PurchaseOrderOwner from "./pages/purchaseOrder/Owner";
 import PurchaseOrderSeller from "./pages/purchaseOrder/Seller";
+import AssetTransfer from "./pages/asset";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/ledger/contract" element={<ContractTable />} />
         <Route path="/purchaseOrder/owner" element={<PurchaseOrderOwner />} />
         <Route path="/purchaseOrder/seller" element={<PurchaseOrderSeller />} />
+        <Route path="/asset-transfer/*" element={<AssetTransfer />} />
       </Routes>
     </Router>
   );

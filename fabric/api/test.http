@@ -1,6 +1,6 @@
 ###
 # Create Asset
-POST http://localhost:6000/createAsset
+POST http://localhost:3001/createAsset
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 
 ###
 # Transfer Asset
-POST http://localhost:6000/transferAsset
+POST http://localhost:3001/transferAsset
 Content-Type: application/json
 
 {
@@ -23,9 +23,9 @@ Content-Type: application/json
 
 ###
 # Read Asset
-GET http://localhost:6000/readAsset?id=asset1
+GET http://localhost:3001/readAsset?id=asset1
 
 ###
 # Read All Assets
-GET http://localhost:6000/readAllAssets
+GET http://localhost:3001/readAllAssets
 

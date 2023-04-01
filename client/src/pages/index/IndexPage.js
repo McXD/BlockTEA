@@ -21,6 +21,9 @@ function IndexPage() {
           <li>
             <Link to="/purchaseOrder">Purchase Order</Link>
           </li>
+            <li>
+                <Link to="/asset-transfer">Asset Transfer</Link>
+            </li>
         </ul>
       </nav>
     </div>
