@@ -1,0 +1,31 @@
+###
+# Create Asset
+POST http://localhost:6000/createAsset
+Content-Type: application/json
+
+{
+  "assetID": "asset2",
+  "color": "blue",
+  "size": 5,
+  "owner": "Tom",
+  "appraisedValue": 6000
+}
+
+###
+# Transfer Asset
+POST http://localhost:6000/transferAsset
+Content-Type: application/json
+
+{
+  "assetID": "asset1",
+  "newOwner": "Jerry"
+}
+
+###
+# Read Asset
+GET http://localhost:6000/readAsset?id=asset1
+
+###
+# Read All Assets
+GET http://localhost:6000/readAllAssets
+

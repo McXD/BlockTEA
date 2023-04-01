@@ -100,25 +100,42 @@ class AssetTransferEvents extends Contract {
 		return JSON.stringify(asset);
 	}
 
-	async GetAllAssets(ctx) {
-		const allResults = [];
-		// range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
-		const iterator = await ctx.stub.getStateByRange('', '');
-		let result = await iterator.next();
-		while (!result.done) {
-			const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-			let record;
-			try {
-				record = JSON.parse(strValue);
-			} catch (err) {
-				console.log(err);
-				record = strValue;
-			}
-			allResults.push(record);
-			result = await iterator.next();
-		}
-		return JSON.stringify(allResults);
-	}
+	async ReadAssets(ctx, startKey, endKey) {
+    // Convert the keys to their respective buffer representations
+    const startKeyBuffer = Buffer.from(startKey);
+    const endKeyBuffer = Buffer.from(endKey);
+
+    // Get the iterator for the range of keys
+    const iterator = await ctx.stub.getStateByRange(
+      startKeyBuffer,
+      endKeyBuffer
+    );
+
+    // Iterate through the keys and store the assets in an array
+    const allResults = [];
+    while (true) {
+      const res = await iterator.next();
+
+      if (res.value && res.value.value.toString()) {
+        const jsonRes = {};
+        jsonRes.Key = res.value.key;
+        try {
+          jsonRes.Record = JSON.parse(res.value.value.toString("utf8"));
+        } catch (err) {
+          console.log(err);
+          jsonRes.Record = res.value.value.toString("utf8");
+        }
+        allResults.push(jsonRes);
+      }
+
+      if (res.done) {
+        console.log("end of data");
+        await iterator.close();
+        console.info(allResults);
+        return allResults;
+      }
+    }
+  }
 
 	// UpdateAsset updates an existing asset in the world state with provided parameters.
 	async UpdateAsset(ctx, id, color, size, owner, appraisedValue) {

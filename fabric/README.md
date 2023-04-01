@@ -5,3 +5,9 @@ This sub-module is a clone of fabric-samples. It is used to build the developmen
 ## Prerequisites
 
 See the [Install](https://hyperledger-fabric.readthedocs.io/en/latest/install.html) page for instructions on how to install the prerequisites.
+
+## Common Tasks
+
+```bash
+./network.sh deployCC -ccn asset-transfer-events -ccp ../asset-transfer-events/chaincode-javascript -ccl javascript
+```
