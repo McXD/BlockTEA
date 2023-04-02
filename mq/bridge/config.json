@@ -1,5 +1,0 @@
-{
-  "mq": {
-    "url": "amqp://localhost"
-  }
-}

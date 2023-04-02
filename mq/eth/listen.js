@@ -6,12 +6,11 @@ const {join} = require("path");
 
 const NETWORK_URL = config.network.rpcUrl;
 const web3 = new Web3(new Web3.providers.HttpProvider(NETWORK_URL));
-const LAST_BLOCK_FILE = 'lastBlock.json';
+const LAST_BLOCK_FILE = join(__dirname, 'last_block.json');
 
 async function getLastBlock() {
     try {
-        const filePath = join(__dirname, LAST_BLOCK_FILE);
-        const data = await fs.readFile(filePath, 'utf-8');
+        const data = await fs.readFile(LAST_BLOCK_FILE, 'utf-8');
         return JSON.parse(data).number;
     } catch (error) {
         return 0;
@@ -19,7 +18,7 @@ async function getLastBlock() {
 }
 
 async function updateLastBlock(lastBlock) {
-    const data = { number: lastBlock };
+    const data = {number: lastBlock};
     await fs.writeFile(LAST_BLOCK_FILE, JSON.stringify(data));
 }
 
@@ -58,13 +57,12 @@ async function main() {
     const contracts = createContractInstances();
     const eventFilters = createEventFilters(startBlock, contracts);
 
-    const { channel } = await mq.init();
-    const queue = 'blockchain-events';
+    const {channel} = await mq.init();
 
-    await pollEvents(channel, queue, eventFilters, contracts);
+    await pollEvents(channel, eventFilters, contracts);
 }
 
-async function pollEvents(channel, queue, eventFilters, contracts) {
+async function pollEvents(channel, eventFilters, contracts) {
     let startBlock = await getLastBlock();
 
     while (true) {
@@ -85,14 +83,16 @@ async function pollEvents(channel, queue, eventFilters, contracts) {
                     origin: "ethereum",
                     transactionId: rawEvent.transactionHash,
                     name: rawEvent.event,
-                    contract: { address: rawEvent.address },
+                    contract: {address: rawEvent.address},
                     payload: rawEvent.returnValues,
                 };
             });
 
             for (const event of events) {
                 // Publish to RabbitMQ
-                mq.sendMessageToQueue(channel, queue, JSON.stringify(event));
+                mq.publish(channel, JSON.stringify(event)).then(() => {
+                    console.log(`Published event: ${JSON.stringify(event)}`);
+                }).catch(e => console.error(e));
             }
         }
 
