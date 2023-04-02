@@ -27,8 +27,8 @@ contract PurchaseOrder is InvoiceBase {
     address public owner;
 
     // Events
-    event NewOrder(uint256 orderId, address indexed buyer, address indexed seller);
-    event OrderConfirmed(uint256 orderId);
+    event NewOrder(uint256 orderId, address indexed buyer, address indexed seller, uint256 totalAmount);
+    event OrderConfirmed(uint256 orderId, address indexed buyer, address indexed seller, uint256 totalAmount);
     event OrderCompleted(uint256 orderId);
 
     // Modifier to restrict function access only to the contract owner (buyer)
@@ -64,7 +64,7 @@ contract PurchaseOrder is InvoiceBase {
             invoiceId: 0
         });
 
-        emit NewOrder(orderIdCounter, owner, _seller);
+        emit NewOrder(orderIdCounter, owner, _seller, _price * _quantity);
     }
 
     // Function for the seller to confirm a purchase order
@@ -76,7 +76,7 @@ contract PurchaseOrder is InvoiceBase {
 
         order.isOrderConfirmed = true;
 
-        emit OrderConfirmed(_orderId);
+        emit OrderConfirmed(_orderId, owner, msg.sender, order.price * order.quantity);
     }
 
     // Function for the buyer to mark a purchase order as completed

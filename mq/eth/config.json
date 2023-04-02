@@ -26,6 +26,12 @@
               "internalType": "uint256",
               "name": "orderId",
               "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
             }
           ],
           "name": "InvoiceCreated",
@@ -38,6 +44,18 @@
               "indexed": false,
               "internalType": "uint256",
               "name": "invoiceId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "orderId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
               "type": "uint256"
             }
           ],
@@ -64,6 +82,12 @@
               "internalType": "address",
               "name": "seller",
               "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalAmount",
+              "type": "uint256"
             }
           ],
           "name": "NewOrder",
@@ -89,6 +113,24 @@
               "indexed": false,
               "internalType": "uint256",
               "name": "orderId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalAmount",
               "type": "uint256"
             }
           ],

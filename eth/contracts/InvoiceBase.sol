@@ -19,8 +19,8 @@ contract InvoiceBase {
     uint256 public invoiceIdCounter;
 
     // Events
-    event InvoiceCreated(uint256 invoiceId, uint256 orderId);
-    event InvoicePaid(uint256 invoiceId);
+    event InvoiceCreated(uint256 invoiceId, uint256 orderId, uint256 amount);
+    event InvoicePaid(uint256 invoiceId, uint256 orderId, uint256 amount);
 
     // Function to create an invoice
     function _createInvoice(uint256 _orderId, uint256 _amount) internal {
@@ -33,7 +33,7 @@ contract InvoiceBase {
             isPaid: false
         });
 
-        emit InvoiceCreated(invoiceIdCounter, _orderId);
+        emit InvoiceCreated(invoiceIdCounter, _orderId, _amount);
     }
 
     // Function to pay an invoice
@@ -46,8 +46,6 @@ contract InvoiceBase {
         invoice.isPaid = true;
         _recipient.transfer(_value * 10 ** 18);
 
-        console.log("Recipient %s received %d ETH for invoice %d", _recipient, _value, _invoiceId);
-
-        emit InvoicePaid(_invoiceId);
+        emit InvoicePaid(_invoiceId, invoice.orderId, invoice.amount);
     }
 }

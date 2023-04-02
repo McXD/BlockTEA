@@ -1,0 +1,6 @@
+{
+  "CreateAsset": [45, 41],
+  "TransferAsset": [41, 45],
+  "OrderConfirmed": [45, 41],
+  "InvoicePaid": [41, 45]
+}
