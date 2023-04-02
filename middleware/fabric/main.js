@@ -42,8 +42,8 @@ async function main() {
         while (true) {
             // Get start block number from the database
             const lastBlockDoc = await dbClient.db(dbName).collection('last_block').findOne({ channelId: channelName });
-            const startBlock = lastBlockDoc ? BigInt(lastBlockDoc.blockNumber) + BigInt(1) : BigInt(0);
-
+            // const startBlock = lastBlockDoc ? BigInt(lastBlockDoc.blockNumber) + BigInt(1) : BigInt(0);
+            const startBlock = BigInt(0);
             await replayChaincodeEvents(network, startBlock);
 
             // Wait for the specified interval before the next iteration
@@ -68,6 +68,7 @@ async function replayChaincodeEvents(network, startBlock) {
     try {
         for await (const event of events) {
             event.payload = JSON.parse(utf8Decoder.decode(event.payload));
+            console.log("Full event:", event)
 
             // Store event in the database if it doesn't already exist
             await eventsCollection.updateOne(
