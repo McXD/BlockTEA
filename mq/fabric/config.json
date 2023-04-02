@@ -1,0 +1,11 @@
+{
+  "channels": {
+    "mychannel": {
+      "chaincodes": {
+        "asset-transfer-events": {
+          "events": ["CreateAsset", "UpdateAsset", "TransferAsset"]
+        }
+      }
+    }
+  }
+}
