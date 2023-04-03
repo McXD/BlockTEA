@@ -1,0 +1,20 @@
+### Issue an IOU
+POST http://localhost:10050/iou/issue/O=PartyB,L=New%20York,C=US/1000
+Content-Type: application/json
+Accept: application/json
+
+###
+
+### Settle an IOU (Replace {linearId} with the linearId obtained from the Issue IOU request)
+POST http://localhost:10050/iou/settle/040519a1-93ba-419c-9ea6-09d14da18d2b/500
+Content-Type: application/json
+Accept: application/json
+
+###
+
+### Get all IOUs
+GET http://localhost:10050/iou
+Content-Type: application/json
+Accept: application/json
+
+###
