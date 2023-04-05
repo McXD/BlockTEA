@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const mq = require('../util/mq');
 
-const MONGODB_URI = 'mongodb://localhost:27017';
+const MONGODB_URI = 'mongodb://localhost:27017/?replicaSet=rs0';
 const DB_NAME = 'blockchain_events';
 const COLLECTION_NAME = 'events';
 const QUEUE_NAME = 'save_to_mongo';

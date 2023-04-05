@@ -6,6 +6,7 @@ import FabricIcon from './assets/hyperledger-logo.svg';
 import CordaIcon from './assets/corda-logo.png';
 import PurchaseOrder from "./pages/purchaseOrder";
 import AssetTransfer from "./pages/asset";
+import EventStream from "./pages/event";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -13,7 +14,7 @@ const { Title } = Typography;
 
 const App = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [selectedKey, setSelectedKey] = useState('1');
+    const [selectedKey, setSelectedKey] = useState('4');
 
 
     return (
@@ -55,6 +56,8 @@ const App = () => {
                   <span style={{fontSize: "24px"}}>
                       {selectedKey === '1' && <h1 style={{ color: 'white' }}>Purchase Order</h1>}
                       {selectedKey === '2' && <h1 style={{ color: 'white' }}>Asset Transfer</h1>}
+                      {selectedKey === '4' && <h1 style={{ color: 'white' }}>Blockchain Events</h1>}
+
                       {/* Add more titles for other selectedKeys */}
                     </span>
                 </Header>
@@ -65,7 +68,7 @@ const App = () => {
                     {/*{selectedKey === '5' && <Odoo />}*/}
                     {/*{selectedKey === '6' && <QuickBook />}*/}
                     {/*{selectedKey === '7' && <BlockTEASubLedger />}*/}
-                    {/*{selectedKey === '4' && <EventStream />}*/}
+                    {selectedKey === '4' && <EventStream />}
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Your Company Name ©2023 Created by Your Team</Footer>
             </Layout>
