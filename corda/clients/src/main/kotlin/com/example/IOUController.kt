@@ -9,6 +9,7 @@ import net.corda.core.messaging.startFlow
 import net.corda.core.node.services.vault.QueryCriteria
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +25,7 @@ data class IOU(val id: String,
 )
 
 @RestController
+@CrossOrigin(origins = ["*"])
 class IOUController(private val rpcConnection: NodeRPCConnection) {
 
     private val proxy = rpcConnection.proxy

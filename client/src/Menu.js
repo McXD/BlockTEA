@@ -7,7 +7,7 @@ import CordaIcon from './assets/corda-logo.png';
 import PurchaseOrder from "./pages/purchaseOrder";
 import AssetTransfer from "./pages/asset";
 import EventStream from "./pages/event";
-
+import IOU from "./pages/iou";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
@@ -56,15 +56,16 @@ const App = () => {
                   <span style={{fontSize: "24px"}}>
                       {selectedKey === '1' && <h1 style={{ color: 'white' }}>Purchase Order</h1>}
                       {selectedKey === '2' && <h1 style={{ color: 'white' }}>Asset Transfer</h1>}
+                      {selectedKey === '3' && <h1 style={{ color: 'white' }}>IOU</h1>}
                       {selectedKey === '4' && <h1 style={{ color: 'white' }}>Blockchain Events</h1>}
 
                       {/* Add more titles for other selectedKeys */}
                     </span>
                 </Header>
-                <Content style={{ margin: '0 16px' }}>
+                <Content style={{ margin: '16px 16px' }}>
                     {selectedKey === '1' && <PurchaseOrder />}
                     {selectedKey === '2' && <AssetTransfer />}
-                    {/*{selectedKey === '3' && <IOU />}*/}
+                    {selectedKey === '3' && <IOU />}
                     {/*{selectedKey === '5' && <Odoo />}*/}
                     {/*{selectedKey === '6' && <QuickBook />}*/}
                     {/*{selectedKey === '7' && <BlockTEASubLedger />}*/}
