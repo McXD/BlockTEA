@@ -43,9 +43,16 @@ const App = () => {
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.SubMenu key="sub1" icon={<AuditOutlined style={{ width: '1.5em', height: '1.5em' }}/>} title="Accounting">
-                        <Menu.Item key="5">Odoo</Menu.Item>
-                        <Menu.Item key="6">QuickBook</Menu.Item>
-                        <Menu.Item key="7">BlockTEA SubLedger</Menu.Item>
+                        <Menu.Item key="5" icon={<LinkOutlined style={{ width: '1.5em', height: '1.5em' }}/>}>
+                            <a href="http://172.20.73.31:8069/web#action=229&model=account.move.line&view_type=list&cids=1&menu_id=115" target="_blank" rel="noopener noreferrer">
+                                Odoo
+                            </a>
+                        </Menu.Item>
+                        <Menu.Item key="6" icon={<LinkOutlined style={{ width: '1.5em', height: '1.5em' }}/>}>
+                            <a href="https://app.sandbox.qbo.intuit.com/app/report/builder?rptId=sbg:a9b1d2ed-f82a-48d9-8440-55ad8221265a&type=system&token=JOURNAL" target="_blank" rel="noopener noreferrer">
+                                QuickBook
+                            </a>
+                        </Menu.Item>
                         <Menu.Item key="8">Configuration</Menu.Item>
                     </Menu.SubMenu>
                     <Menu.Item key="4" icon={<LineChartOutlined style={{ width: '1.5em', height: '1.5em' }}/>}>

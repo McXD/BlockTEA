@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import axios from "axios";
 const { Option } = Select;
 const eventSchemas = require('./eventSchemas.json')
-
+const vendor = 'quickbooks';
 const baseUrl = 'http://localhost:3002';
 
 const ConfigurationManager = () => {
@@ -24,7 +24,7 @@ const ConfigurationManager = () => {
         // Fetch debit and credit accounts from API
         const fetchAccounts = async () => {
             try {
-                const response = await fetch(`${baseUrl}/accounts`, {
+                const response = await fetch(`${baseUrl}/accounts/${vendor}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -32,6 +32,13 @@ const ConfigurationManager = () => {
                 });
 
                 const accounts = await response.json();
+                if (vendor === 'quickbooks') {
+                    accounts.forEach((account) => {
+                        account.id = account.Id;
+                        account.display_name = account.Name;
+                    });
+                }
+
                 console.log(accounts)
                 setAccounts(accounts);
             } catch (error) {

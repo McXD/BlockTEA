@@ -1,5 +1,3 @@
-# quickbooks_auth.py
-
 import requests
 
 

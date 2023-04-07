@@ -4,7 +4,7 @@ POST http://localhost:3001/createAsset
 Content-Type: application/json
 
 {
-  "assetID": "asset4",
+  "assetID": "asset1",
   "color": "blue",
   "size": 5,
   "owner": "Tom",

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const odooConnection = require('./odoo');
+const quickbooksConnection = require('./qb');
 const {connect} = require("mongoose");
 const Configuration = require('./Configuration');
 const morgan = require("morgan");
@@ -28,11 +29,17 @@ const db = 'demo';
 const username = 'fyl155165@gmail.com';
 const password = 'fyl200165';
 
-app.post('/accounts', async (req, res) => {
+app.post('/accounts/:vendor', async (req, res) => {
     try {
-        const connection = odooConnection(url, db, username, password);
-        const accounts = await connection.fetchAccounts();
-        res.json(accounts);
+        if (req.params.vendor === 'odoo') {
+            const connection = odooConnection(url, db, username, password);
+            const accounts = await connection.fetchAccounts();
+            res.json(accounts);
+        } else if (req.params.vendor === 'quickbooks') {
+            const connection = quickbooksConnection();
+            const accounts = await connection.fetchAccounts();
+            res.json(accounts);
+        }
     } catch (error) {
         console.error('Error fetching accounts:', error);
         res.status(500).json({ error: 'Error fetching accounts' });
