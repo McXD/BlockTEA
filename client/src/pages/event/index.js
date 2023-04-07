@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Table} from "antd";
 import "./event.css";
 import ReactJson from 'react-json-view';
+import { CopyOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 const App = () => {
     const [data, setData] = useState([]);
@@ -71,6 +73,7 @@ const App = () => {
             dataIndex: "origin",
             key: "origin",
             sorter: (a, b) => a.origin.localeCompare(b.origin),
+            render: (origin) => origin.toUpperCase(),
             filters: [
                 {text: "Ethereum", value: "ethereum"},
                 {text: "Hyperledger", value: "hyperledger"},
@@ -83,21 +86,51 @@ const App = () => {
             title: "Transaction ID",
             dataIndex: "transactionId",
             key: "transactionId",
-            render: (transactionId) => (transactionId.substring(0, 10) + "...")
+            render: (transactionId) => (
+                <div style={{ display: "flex", alignItems: "center", fontFamily: "monospace" }}>
+                    <span>{transactionId.substring(0, 10) + "..."}</span>
+                    <CopyOutlined
+                        style={{ marginLeft: 8, cursor: "pointer" }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(transactionId).then(
+                                () => {
+                                    message.success("Transaction ID copied to clipboard");
+                                    console.log("Transaction ID copied to clipboard");
+                                },
+                                (err) => {
+                                    console.error("Could not copy text:", err);
+                                }
+                            );
+                        }}
+                    />
+                </div>
+            ),
         },
 
         {
             title: "Contract",
             dataIndex: "contract",
             key: "contract",
-            render: (contract) => <ReactJson src={contract} collapsed={true}/>,
+            render: (contract) => <ReactJson
+                src={contract}
+                collapsed={true}
+                displayDataTypes={false}
+                displayObjectSize={false}
+                enableClipboard={false}
+            />,
 
         },
         {
             title: "Payload",
             dataIndex: "payload",
             key: "payload",
-            render: (payload) => <ReactJson src={payload} collapsed={true}/>,
+            render: (payload) => <ReactJson
+                src={payload}
+                collapsed={true}
+                displayDataTypes={false}
+                displayObjectSize={false}
+                enableClipboard={false}
+            />,
         },
     ];
 

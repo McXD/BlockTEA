@@ -8,13 +8,15 @@ import PurchaseOrder from "./pages/purchaseOrder";
 import AssetTransfer from "./pages/asset";
 import EventStream from "./pages/event";
 import IOU from "./pages/iou";
+import Configuration from "./pages/config";
+import {Link} from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
 
 const App = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [selectedKey, setSelectedKey] = useState('4');
+    const [selectedKey, setSelectedKey] = useState('8');
 
 
     return (
@@ -58,7 +60,7 @@ const App = () => {
                       {selectedKey === '2' && <h1 style={{ color: 'white' }}>Asset Transfer</h1>}
                       {selectedKey === '3' && <h1 style={{ color: 'white' }}>IOU</h1>}
                       {selectedKey === '4' && <h1 style={{ color: 'white' }}>Blockchain Events</h1>}
-
+                      {selectedKey === '8' && <h1 style={{ color: 'white' }}>Configuration</h1>}
                       {/* Add more titles for other selectedKeys */}
                     </span>
                 </Header>
@@ -70,6 +72,7 @@ const App = () => {
                     {/*{selectedKey === '6' && <QuickBook />}*/}
                     {/*{selectedKey === '7' && <BlockTEASubLedger />}*/}
                     {selectedKey === '4' && <EventStream />}
+                    {selectedKey === '8' && <Configuration />}
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Your Company Name ©2023 Created by Your Team</Footer>
             </Layout>

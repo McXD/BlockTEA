@@ -1,0 +1,27 @@
+{
+  "CreateAsset": {
+    "ID": "string",
+    "Color": "string",
+    "Size": "number",
+    "Owner": "string",
+    "AppraisedValue": "number"
+  },
+  "TransferAsset": {
+    "ID": "string",
+    "Color": "string",
+    "Size": "number",
+    "Owner": "string",
+    "AppraisedValue": "number"
+  },
+  "OrderConfirmed": {
+    "orderId": "string",
+    "buyer": "string",
+    "seller": "string",
+    "totalAmount": "number"
+  },
+  "InvoicePaid": {
+    "invoiceId": "string",
+    "orderId": "string",
+    "amount": "number"
+  }
+}
