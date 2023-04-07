@@ -3,7 +3,6 @@ const fs = require('fs/promises');
 const config = require('./config');
 const mq = require('../util/mq');
 const {join} = require("path");
-
 const NETWORK_URL = config.network.rpcUrl;
 const web3 = new Web3(new Web3.providers.HttpProvider(NETWORK_URL));
 const LAST_BLOCK_FILE = join(__dirname, 'last_block.json');
@@ -77,16 +76,20 @@ async function pollEvents(channel, eventFilters, contracts) {
             eventFilter.fromBlock = startBlock;
             eventFilter.toBlock = endBlock;
             const rawEvents = await eventFilter.get(eventFilter.fromBlock, eventFilter.toBlock);
+            console.log(rawEvents)
 
-            const events = rawEvents.map(rawEvent => {
+            const events = await Promise.all(rawEvents.map(async (rawEvent) => {
+                const block = await web3.eth.getBlock(rawEvent.blockNumber);
+                const timestamp = block.timestamp;
                 return {
+                    timestamp: timestamp,
                     origin: "ethereum",
                     transactionId: rawEvent.transactionHash,
                     name: rawEvent.event,
                     contract: {address: rawEvent.address},
                     payload: rawEvent.returnValues,
                 };
-            });
+            }));
 
             for (const event of events) {
                 // Publish to RabbitMQ

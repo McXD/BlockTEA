@@ -48,10 +48,16 @@ const App = () => {
 
     const columns = [
         {
+            title: "Timestamp",
+            dataIndex: "timestamp",
+            key: "timestamp",
+            render: (timestamp) => new Date(timestamp * 1000).toLocaleString(),
+        },
+        {
             title: "ID",
             dataIndex: "_id",
             key: "_id",
-            render: (_id) => _id.substring(0, 10) + "..."
+            render: (_id) => '...' + _id.substring(_id.length - 10, _id.length)
         },
         {
             title: "Origin",

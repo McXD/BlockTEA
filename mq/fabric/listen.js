@@ -65,6 +65,7 @@ async function processChannel(gateway, channelName, mqChannel) {
 }
 
 async function replayChaincodeEvents(mqChannel, network, channelName, startBlock) {
+    const contract = network.getContract('qscc');
     let lastBlock = startBlock;
 
     for (const chaincodeName in config.channels[channelName].chaincodes) {
@@ -76,6 +77,9 @@ async function replayChaincodeEvents(mqChannel, network, channelName, startBlock
                 // Check if the current event is specified in the config for this chaincode
                 if (interestedEvents.has(rawEvent.eventName)) {
                     const event = {
+                        // TODO: read time from block/tx instead of using current time
+                        // Unix timestamp in seconds
+                        timestamp: Math.floor(Date.now() / 1000),
                         origin: "hyperledger",
                         transactionId: rawEvent.transactionId,
                         name: rawEvent.eventName,
@@ -100,6 +104,7 @@ async function replayChaincodeEvents(mqChannel, network, channelName, startBlock
 
     return lastBlock + BigInt(1);
 }
+
 
 main().catch((error) => {
     console.error('Failed to run the application:', error);

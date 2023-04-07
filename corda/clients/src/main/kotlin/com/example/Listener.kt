@@ -51,6 +51,7 @@ class Listener(
                     val iouState = stateAndRef.state.data
                     val eventName = if (update.consumed.isEmpty()) "IssueIOU" else "SettleIOU"
                     val event = mapOf(
+                        "timestamp" to System.currentTimeMillis() / 1000,
                         "origin" to "corda",
                         "transactionId" to stateAndRef.ref.txhash.toString(),
                         "name" to eventName,
