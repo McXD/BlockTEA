@@ -51,18 +51,33 @@ const App = () => {
             title: "Timestamp",
             dataIndex: "timestamp",
             key: "timestamp",
+            sorter: (a, b) => a.timestamp - b.timestamp,
             render: (timestamp) => new Date(timestamp * 1000).toLocaleString(),
         },
+        // {
+        //     title: "ID",
+        //     dataIndex: "_id",
+        //     key: "_id",
+        //     render: (_id) => '...' + _id.substring(_id.length - 10, _id.length)
+        // },
         {
-            title: "ID",
-            dataIndex: "_id",
-            key: "_id",
-            render: (_id) => '...' + _id.substring(_id.length - 10, _id.length)
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+            sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
             title: "Origin",
             dataIndex: "origin",
             key: "origin",
+            sorter: (a, b) => a.origin.localeCompare(b.origin),
+            filters: [
+                {text: "Ethereum", value: "ethereum"},
+                {text: "Hyperledger", value: "hyperledger"},
+                {text: "Corda", value: "corda"},
+                // Add more origins as needed
+            ],
+            onFilter: (value, record) => record.origin === value,
         },
         {
             title: "Transaction ID",
@@ -70,37 +85,38 @@ const App = () => {
             key: "transactionId",
             render: (transactionId) => (transactionId.substring(0, 10) + "...")
         },
-        {
-            title: "Name",
-            dataIndex: "name",
-            key: "name",
-        },
+
         {
             title: "Contract",
             dataIndex: "contract",
             key: "contract",
-            render: (contract) => <ReactJson src={contract} collapsed={true} />,
+            render: (contract) => <ReactJson src={contract} collapsed={true}/>,
 
         },
         {
             title: "Payload",
             dataIndex: "payload",
             key: "payload",
-            render: (payload) => <ReactJson src={payload} collapsed={true} />,
+            render: (payload) => <ReactJson src={payload} collapsed={true}/>,
         },
     ];
 
-
     return (
-        <Table
-            columns={columns}
-            dataSource={data}
-            rowKey={"_id"}
-            pagination={false}
-            bordered
-            className="animated-table"
-            style={{width: "100%", fontFamily: "monospace"}}
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={data}
+                rowKey={"_id"}
+                pagination={{
+                    defaultPageSize: 20,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["20", "50", "100"],
+                }}
+                bordered
+                className="animated-table"
+                style={{ width: "100%", fontFamily: "monospace" }}
+            />
+        </>
     );
 };
 
