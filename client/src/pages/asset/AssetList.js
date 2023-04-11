@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Table, message, Modal, Form, Input} from 'antd';
+import {Table, message, Modal, Form, Input, Button} from 'antd';
 import {readAssets, transferAsset, updateAsset} from './apiService';
 import { PartyContext } from "../../context/partyContext";
+import CreateAsset from "./CreateAsset";
 
 const AssetList = () => {
     const [assets, setAssets] = useState([]);
@@ -96,7 +97,9 @@ const AssetList = () => {
                 dataSource={assets}
                 rowKey="assetId"
                 loading={loading}
+                style={{ marginBottom: 16 }}
             />
+            <CreateAsset />
             <Modal
                 title={`Transfer Asset: ${currentAsset ? currentAsset.Record.ID : ''}`}
                 visible={transferModalVisible}

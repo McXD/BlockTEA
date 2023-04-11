@@ -4,8 +4,8 @@ const config = {
         poRole: "buyer",
         fabricOrg: "Org1",
         fabricApiUrl: "http://localhost:3001",
-        cordaIdentity: "O=PartyA,L=London,C=GB",
-        cordaApiUrl: "http://localhost:10050",
+        cordaIdentity: "O=PartyA, L=London, C=GB",
+        cordaApiUrl: "http://localhost:10051",
         aisProvider: {
             id: "odoo",
             name: "Odoo",
@@ -16,9 +16,9 @@ const config = {
         name: "GreenSolutions Inc.",
         poRole: "seller",
         fabricOrg: "Org2",
-        fabricApiUrl: "http://localhost:3002",
-        cordaIdentity: "O=PartyB,L=New York,C=US",
-        cordaApiUrl: "http://localhost:10051",
+        fabricApiUrl: "http://localhost:3001",
+        cordaIdentity: "O=PartyB, L=New York, C=US",
+        cordaApiUrl: "http://localhost:10052",
         aisProvider: {
             id: "quickbooks",
             name: "QuickBooks",
@@ -27,7 +27,8 @@ const config = {
     },
     apiBaseUrl: "http://localhost:8000",
     etherscanUrl: "http://localhost:4000",
-    configApiUrl: "http://localhost:3003",
+    configApiUrl: "http://localhost:8081",
+    wsUrl: "ws://localhost:8082",
 };
 
 export default config;

@@ -3,9 +3,11 @@ import { Button, Table, Dropdown, Menu, Form, Select, Popconfirm, Row, Col, mess
 import { PlusOutlined } from '@ant-design/icons';
 import axios from "axios";
 import {PartyContext} from "../../context/partyContext";
+import config from '../../config';
+
 const { Option } = Select;
 const eventSchemas = require('./eventSchemas.json')
-const baseUrl = require('../../config').configApiUrl;
+const baseUrl = config.configApiUrl;
 
 const ConfigurationManager = () => {
     const [configurations, setConfigurations] = useState([]);
@@ -53,7 +55,7 @@ const ConfigurationManager = () => {
 
         fetchConfigurations();
         fetchAccounts();
-    }, []);
+    }, [vendor]);
 
     const handleEventChange = (value) => {
         setSelectedEvent(value);
@@ -83,7 +85,7 @@ const ConfigurationManager = () => {
         };
 
         try {
-            const response = await axios.post(`${baseUrl}/configurations`, configurationWithAccounts);
+            const response = await axios.post(`${baseUrl}/configurations/${vendor}`, configurationWithAccounts);
             setConfigurations([...configurations, response.data]);
             message.success('Configuration added successfully');
         } catch (error) {
@@ -250,7 +252,7 @@ const ConfigurationManager = () => {
                     </Button>
                 </Form.Item>
             </Form>
-            <Table dataSource={configurations} columns={columns} />
+            <Table dataSource={configurations.filter((conf) => conf.vendor === vendor)} columns={columns} />
         </div>
     );
 

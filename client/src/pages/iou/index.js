@@ -30,7 +30,7 @@ const IOUApp = () => {
         fetchIous();
         console.log("ious: " + ious)
         console.log(ious[0])
-    }, []);
+    }, [state]);
 
     const fetchIous = async () => {
         try {
@@ -118,7 +118,7 @@ const IOUApp = () => {
                     onChange={onLenderChange}
                 >
                     {
-                        state.party === "partyA" ? (
+                        state.currentParty === "partyA" ? (
                             <Option value="O=PartyB,L=New York,C=US">GreenSolutions Ltd.</Option>
                         ) : (
                             <Option value="O=PartyA,L=London,C=GB">BlueTech Ltd.</Option>

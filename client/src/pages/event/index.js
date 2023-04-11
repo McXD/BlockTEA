@@ -4,12 +4,13 @@ import "./event.css";
 import ReactJson from 'react-json-view';
 import { CopyOutlined } from "@ant-design/icons";
 import { message } from "antd";
+import config from "../../config";
 
 const App = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        const socket = new WebSocket("ws://localhost:8081");
+        const socket = new WebSocket(config.wsUrl);
 
         socket.onmessage = (event) => {
             const newData = JSON.parse(event.data);

@@ -1,11 +1,10 @@
 import axios from 'axios';
 
 export async function createAsset(baseUrl, asset) {
-    const { assetId, assetName, color, size, owner } = asset;
-    const appraisedValue = '0'; // Adjust as needed
+    const { assetID, color, size, owner, appraisedValue } = asset;
 
     await axios.post(`${baseUrl}/createAsset`, {
-        assetID: assetId,
+        assetID,
         color,
         size,
         owner,

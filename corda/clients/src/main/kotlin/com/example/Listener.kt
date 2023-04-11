@@ -8,10 +8,12 @@ import net.corda.core.node.services.vault.QueryCriteria
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Exchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
+@Profile("listening")
 @Component
 class Listener(
     private val rpcConnection: NodeRPCConnection,

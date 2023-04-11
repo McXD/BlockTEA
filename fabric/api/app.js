@@ -31,6 +31,7 @@ async function buildGateway() {
 }
 
 app.post("/createAsset", async (req, res) => {
+    console.log(req.body)
     const {assetID, color, size, owner, appraisedValue} = req.body;
 
     try {

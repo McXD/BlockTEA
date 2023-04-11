@@ -1,6 +1,5 @@
 import {
     FileTextFilled,
-    ContainerFilled,
     BankFilled,
     LinkOutlined,
     AccountBookFilled,
@@ -8,7 +7,7 @@ import {
     SettingFilled,
     GoldFilled,
 } from '@ant-design/icons';
-import {Breadcrumb, Layout, Menu, Switch, Typography} from 'antd';
+import {Layout, Menu, Typography} from 'antd';
 import React, {useState} from 'react';
 import {ReactComponent as EthereumIcon} from './assets/ethereum-logo.svg';
 import FabricIcon from './assets/hyperledger-logo.svg';
@@ -60,12 +59,12 @@ const App = () => {
                     </Menu.SubMenu>
                     <Menu.SubMenu key="sub1" icon={<AccountBookFilled style={{width: '1.5em', height: '1.5em'}}/>}
                                   title="Accounting">
-                        <Menu.Item key="5" icon={<LinkOutlined />}>
+                        <Menu.Item key="5" icon={<LinkOutlined/>}>
                             <a href={partyParameters.aisProvider.url} target="_blank" rel="noopener noreferrer">
                                 {partyParameters.aisProvider.name}
                             </a>
                         </Menu.Item>
-                        <Menu.Item key="8" icon={<SettingFilled />}> Configuration</Menu.Item>
+                        <Menu.Item key="8" icon={<SettingFilled/>}> Configuration</Menu.Item>
                     </Menu.SubMenu>
                     <Menu.Item key="4" icon={<DashboardFilled style={{width: '1.5em', height: '1.5em'}}/>}>
                         Event Stream

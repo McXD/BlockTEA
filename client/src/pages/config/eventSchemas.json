@@ -13,15 +13,40 @@
     "Owner": "string",
     "AppraisedValue": "number"
   },
+  "NewOrder": {
+    "orderId": "string",
+    "buyer": "string",
+    "seller": "string",
+    "totalAmount": "number"
+  },
   "OrderConfirmed": {
     "orderId": "string",
     "buyer": "string",
     "seller": "string",
     "totalAmount": "number"
   },
+  "InvoiceCreated": {
+    "invoiceId": "string",
+    "orderId": "string",
+    "amount": "number"
+  },
   "InvoicePaid": {
     "invoiceId": "string",
     "orderId": "string",
     "amount": "number"
+  },
+  "IssueIOU": {
+    "linearId": "string",
+    "lender": "string",
+    "borrower": "string",
+    "amount": "number",
+    "paidAmount": "number"
+  },
+  "SettleIOU": {
+    "linearId": "string",
+    "lender": "string",
+    "borrower": "string",
+    "amount": "number",
+    "paidAmount": "number"
   }
 }
