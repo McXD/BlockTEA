@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Button, Table, Dropdown, Menu, Form, Select, Popconfirm, Row, Col, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import axios from "axios";
+import {PartyContext} from "../../context/partyContext";
 const { Option } = Select;
 const eventSchemas = require('./eventSchemas.json')
-const vendor = 'quickbooks';
-const baseUrl = 'http://localhost:3002';
+const baseUrl = require('../../config').configApiUrl;
 
 const ConfigurationManager = () => {
     const [configurations, setConfigurations] = useState([]);
@@ -18,6 +18,10 @@ const ConfigurationManager = () => {
     );
     const [selectedDebitAccount, setSelectedDebitAccount] = useState(null);
     const [selectedCreditAccount, setSelectedCreditAccount] = useState(null);
+    const { state } = useContext(PartyContext);
+    const { partyParameters } = state;
+    const vendor = partyParameters.aisProvider.id;
+
 
 
     useEffect(() => {

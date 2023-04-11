@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Button, Input, Table, message, Tabs, Select } from 'antd';
 import axios from 'axios';
+import { PartyContext } from "../../context/partyContext";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
-const API_BASE = 'http://localhost:10050';
-const ourIdentity = 'O=PartyA, L=London, C=GB';
+
 
 const IOUApp = () => {
     const [ious, setIous] = useState([]);
@@ -13,6 +13,10 @@ const IOUApp = () => {
     const [settlementAmount, setSettlementAmount] = useState(0);
     const [selectedIOU, setSelectedIOU] = useState(null);
     const [borrower, setBorrower] = useState(null);
+    const { state } = useContext(PartyContext)
+    const { partyParameters } = state
+    const ourIdentity = partyParameters.cordaIdentity
+    const API_BASE = partyParameters.cordaApiUrl
 
     const columns = [
         { title: 'Linear ID', dataIndex: 'id', key: 'id' },
@@ -83,6 +87,7 @@ const IOUApp = () => {
 
     return (
         <div>
+            <h1> {`${partyParameters.name} As ${partyParameters.cordaIdentity}`} </h1>
             <Tabs style={{ marginBottom: 16 }}>
                 <TabPane tab="As Lender" key="1">
                     <Table
@@ -113,10 +118,10 @@ const IOUApp = () => {
                     onChange={onLenderChange}
                 >
                     {
-                        ourIdentity === 'O=PartyA,L=London,C=GB' ? (
-                            <Option value="O=PartyB,L=New York,C=US">PartyB</Option>
+                        state.party === "partyA" ? (
+                            <Option value="O=PartyB,L=New York,C=US">GreenSolutions Ltd.</Option>
                         ) : (
-                            <Option value="O=PartyA,L=London,C=GB">PartyA</Option>
+                            <Option value="O=PartyA,L=London,C=GB">BlueTech Ltd.</Option>
                         )
                     }
                 </Select>
@@ -143,7 +148,6 @@ const IOUApp = () => {
                     </div>
                 )
             }
-
         </div>
     );
 

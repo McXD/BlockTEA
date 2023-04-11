@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001';
-
-export async function createAsset(asset) {
+export async function createAsset(baseUrl, asset) {
     const { assetId, assetName, color, size, owner } = asset;
     const appraisedValue = '0'; // Adjust as needed
 
-    await axios.post(`${API_URL}/createAsset`, {
+    await axios.post(`${baseUrl}/createAsset`, {
         assetID: assetId,
         color,
         size,
@@ -15,30 +13,30 @@ export async function createAsset(asset) {
     });
 }
 
-export async function transferAsset( assetId, newOwner) {
-    await axios.post(`${API_URL}/transferAsset`, {
+export async function transferAsset(baseUrl, assetId, newOwner) {
+    await axios.post(`${baseUrl}/transferAsset`, {
         assetID: assetId,
         newOwner
     });
 }
 
-export async function readAssets() {
-    const response = await axios.get(`${API_URL}/readAllAssets`);
+export async function readAssets(baseUrl) {
+    const response = await axios.get(`${baseUrl}/readAllAssets`);
     return response.data;
 }
 
-export async function readAsset(id) {
-    const response = await axios.get(`${API_URL}/readAsset`, {
+export async function readAsset(baseUrl, id) {
+    const response = await axios.get(`${baseUrl}/readAsset`, {
         params: { id }
     });
     return response.data;
 }
 
-export async function updateAsset(assetId, asset) {
+export async function updateAsset(baseUrl, assetId, asset) {
     const { ID, Color, Size, Owner, AppraisedValue } = asset;
     console.log("asset", asset);
 
-    await axios.post(`${API_URL}/updateAsset`, {
+    await axios.post(`${baseUrl}/updateAsset`, {
         assetID: ID,
         color: Color,
         size: Size,

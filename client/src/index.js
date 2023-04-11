@@ -5,6 +5,7 @@ import App from './App';
 import { Web3ReactProvider } from "@web3-react/core";
 import Web3 from "web3";
 import reportWebVitals from './reportWebVitals';
+import {PartyProvider} from "./context/partyContext";
 
 const getLibrary = (provider) => {
   const library = new Web3(provider);
@@ -16,7 +17,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
-      <App />
+        <PartyProvider>
+            <App />
+        </PartyProvider>
     </Web3ReactProvider>
   </React.StrictMode>
 );

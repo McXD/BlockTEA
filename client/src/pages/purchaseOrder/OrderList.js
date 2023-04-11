@@ -183,7 +183,7 @@ const OrderList = ({ contractAddress, role }) => {
 
     return (
         <div>
-            <Table dataSource={orders} columns={columns} rowKey="id" />
+            <Table dataSource={orders} columns={columns} rowKey="id" style={{marginBottom: "12px"}}/>
             {role === "buyer" && <Button type="primary" onClick={showModal}>
                 Create Order
             </Button>}

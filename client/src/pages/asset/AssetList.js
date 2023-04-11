@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {Table, message, Modal, Form, Input, Button} from 'antd';
-import { Link, useMatch } from 'react-router-dom';
+import React, {useState, useEffect, useContext} from 'react';
+import {Table, message, Modal, Form, Input} from 'antd';
 import {readAssets, transferAsset, updateAsset} from './apiService';
+import { PartyContext } from "../../context/partyContext";
 
 const AssetList = () => {
     const [assets, setAssets] = useState([]);
@@ -10,7 +10,9 @@ const AssetList = () => {
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
     const [currentAsset, setCurrentAsset] = useState(null);
     const [form] = Form.useForm();
-    const match = useMatch('*');
+    const { state } = useContext(PartyContext);
+    const { partyParameters } = state;
+    const baseUrl = partyParameters.fabricApiUrl;
 
     const columns = [
         { title: 'Asset ID', dataIndex: ['Record', 'ID'], key: 'assetId' },
@@ -42,7 +44,7 @@ const AssetList = () => {
     const handleUpdateSubmit = async (values) => {
         try {
             console.log("values", values)
-            await updateAsset(currentAsset.ID, values);
+            await updateAsset(baseUrl, currentAsset.ID, values);
             message.success('Asset updated successfully');
             currentAsset.Record = values;
             setAssets([...assets]);
@@ -59,7 +61,7 @@ const AssetList = () => {
 
     const handleTransferSubmit = async (values) => {
         try {
-            await transferAsset(currentAsset.Record.ID, values.newOwner);
+            await transferAsset(baseUrl, currentAsset.Record.ID, values.newOwner);
             message.success('Asset transferred successfully');
             currentAsset.Record.Owner = values.newOwner;
             setAssets([...assets]);
@@ -73,7 +75,7 @@ const AssetList = () => {
         const fetchAssets = async () => {
             setLoading(true);
             try {
-                const data = await readAssets();
+                const data = await readAssets(baseUrl);
                 console.log(data)
                 setAssets(data);
             } catch (error) {
@@ -88,6 +90,7 @@ const AssetList = () => {
 
     return (
         <>
+            <h1> {partyParameters.name + " As " + partyParameters.fabricOrg} </h1>
             <Table
                 columns={columns}
                 dataSource={assets}
