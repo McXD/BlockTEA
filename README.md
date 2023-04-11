@@ -159,4 +159,90 @@ npm start
 
 ### AIS
 
-You can spin up your local Odoo instance and use the QuickBooks sandbox to for the demo. Remember to update the credentials. 
+You can spin up your local [Odoo instance](https://github.com/odoo/odoo) and use the [QuickBooks sandbox](https://developer.intuit.com/app/developer/qbo/docs/develop/sandboxes/manage-your-sandboxes) to for the demo. Remember to update the credentials in the code. 
+
+## Demo Flow
+
+### Create Related Accounts
+
+First, create the following accounts in Odoo and QuickBooks. The account names can be flexible just to distinguish them from the other system-generated accounts.
+
+| AIS        | Account Name                   | Account Type | Description                               |
+|------------|--------------------------------|--------------|-------------------------------------------|
+| Odoo       | Ether                          | Asset        | PO is settled in Ether                    |
+| Odoo       | Inventory (BlockTEA)           | Asset        | Inventory account for PO                  |
+| Odoo       | Accounts Payable (BlockTEA)    | Liability    | Accounts payable for PO                   |
+| Odoo       | Fabric Asset                   | Asset        | Asset account for Fabric Asset Transfer   |
+| Odoo       | Cash (BlockTEA)                | Asset        | Cash account for the demo                 |
+| Odoo       | Profit on Fabric Asset         | Revenue      | Revenue account for Fabric Asset Transfer |
+| Odoo       | Opening Balance (Fabric Asset) | Equity       | Opening balance for Fabric Asset Transfer |
+| Odoo       | Loan Receivable (IOU)          | Asset        | Loan receivable for IOU                   |
+| QuickBooks | Accounts Receivable (BlockTEA) | Asset        | Accounts receivable for PO                |
+| QuickBooks | Revenue (BlockTEA)             | Revenue      | Revenue account for PO                    |
+| QuickBooks | Ether                          | Asset        | Purchase orders are settled in Ether      |
+| QuickBooks | Fabric Asset                   | Asset        | Asset account for Fabric Asset Transfer   |
+| QuickBooks | Cash (BlockTEA)                | Asset        | Cash account for the demo                 |
+| QuickBooks | Profit on Fabric Asset         | Revenue      | Revenue account for Fabric Asset Transfer |
+| QuickBooks | Opening Balance (Fabric Asset) | Equity       | Opening balance for Fabric Asset Transfer |
+| QuickBooks | Loan Payable (IOU)             | Liability    | Loan payable for IOU                      |
+
+### Configure Accounting Settings
+
+#### BlueTech Ltd.
+
+1. Go to the client app and click on the "Configuration" tab under "Accounting". Use the profile of "BlueTech Ltd." to configure the accounting settings.
+
+2. Add the following configurations:
+
+| Event          | Debit Account               | Credit Account                 | Amount Field   |
+|----------------|-----------------------------|--------------------------------|----------------|
+| OrderConfirmed | Inventory (BlockTEA)        | Accounts Payable (BlockTEA)    | totalAmount    |
+| InvoicePaid    | Accounts Payable (BlockTEA) | Cash (BlockTEA)                | amount         |
+| CreateAsset    | Fabric Asset                | Opening Balance (Fabric Asset) | appraisedValue |
+| TransferAsset  | Cash (BlockTEA)             | Fabric Asset                   | appraisedValue |
+| IssueIOU       | Loan Receivable (IOU)       | Cash (BlockTEA)                | amount         |
+
+#### GreenSolutions Inc.
+
+1. Go to the client app and click on the "Configuration" tab under "Accounting". Use the profile of "GreenSolutions Inc." to configure the accounting settings.
+
+2. Add the following configurations:
+
+| Event          | Debit Account                  | Credit Account     | Amount Field   |
+|----------------|--------------------------------|--------------------|----------------|
+| OrderConfirmed | Accounts Receivable (BlockTEA) | Revenue (BlockTEA) | totalAmount    |
+| InvoicePaid    | Revenue (BlockTEA)             | Ether              | amount         |
+| TransferAsset  | Fabric Asset                   | Cash (BlockTEA)    | appraisedValue |
+| IssueIOU       | Cash (BlockTEA)                | Loan Payable (IOU) | amount         |
+
+### Purchase Order
+
+1. Go to the client app and click on the "Purchase Order" tab. Use the profile of "BlueTech Ltd." to create a purchase order for "GreenSolutions Inc.". By default, the addresses for BlueTech is 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 and 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 for GreenSolutions.
+
+2. A `NewOrder` event will be emitted. And you can check this in the "Event Stream" tab. Since we didn't configure the accounting for this event, nothing will be recorded in the AIS.
+
+3. Use the profile of "GreenSolutions Inc." to confirm the purchase order. A `OrderConfirmed` event will be emitted. The accounting settings will be used to record the event in the AIS. Go to the AIS for both companies to check it. A link is provided under the "Accounting" tab.
+
+4. Use the profile of "GreenSolutions Inc." to create an invoice for the purchase order. A `InvoiceCreated` event will be emitted. Since we didn't configure the accounting for this event, nothing will be recorded in the AIS.
+
+5. Use the profile of "BlueTech Ltd." to pay the invoice. A `InvoicePaid` event will be emitted. The accounting settings will be used to record the event in the AIS. Go to the AIS for both companies to check it. A link is provided under the "Accounting" tab.
+
+### Asset Transfer
+
+1. Go to the client app and click on the "Asset Transfer" tab. Use the profile of "BlueTech Ltd." to create an asset transfer for "GreenSolutions Inc.". 
+
+2. A `CreateAsset` event will be emitted. BlueTech will record the asset in the AIS. GreenSolutions will not since it is not configured.
+
+3. Trigger the transfer by clicking on the `transfer` action of the newly created asset. A `TransferAsset` event will be emitted. Both parties will account for this event as configured.
+
+### IOU
+
+1. Go to the client app and click on the "IOU" tab. Use the profile of "BlueTech Ltd." to create an IOU for "GreenSolutions Inc.".
+
+2. An `IssueIOU` event will be emitted. Both parties will account for the event.
+
+3. Use the profile of "GreenSolutions Inc." to pay the IOU. A `Settle` event will be emitted. Both parties will account for the event.
+
+## Work in Progress
+
+Handle other events and allow more complex configurations.

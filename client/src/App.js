@@ -48,7 +48,7 @@ const App = () => {
                     <Menu.SubMenu key="fabric" icon={<img src={FabricIcon} style={{width: '1.5em', height: '1.5em'}}/>}
                                   title="Hyperledger Fabric">
                         <Menu.Item key="2" icon={<GoldFilled/>}>
-                            Asset Transfer (HLF)
+                            Asset Transfer
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.SubMenu key="corda" icon={<img src={CordaIcon} style={{width: '1.5em', height: '1.5em'}}/>}
@@ -92,7 +92,9 @@ const App = () => {
                     {selectedKey === '4' && <EventStream/>}
                     {selectedKey === '8' && <Configuration/>}
                 </Content>
-                <Footer style={{textAlign: 'center'}}>Your Company Name ©2023 Created by Your Team</Footer>
+                <Footer style={{textAlign: 'center'}}>
+                    BlockTEA Demo Created by <em> Yunlin FENG </em> for the Capstone Project
+                </Footer>
             </Layout>
         </Layout>
     );
