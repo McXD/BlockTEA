@@ -9,6 +9,7 @@ const AssetList = () => {
     const [loading, setLoading] = useState(false);
     const [transferModalVisible, setTransferModalVisible] = useState(false);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
+    const [createModalVisible, setCreateModalVisible] = useState(false);
     const [currentAsset, setCurrentAsset] = useState(null);
     const [form] = Form.useForm();
     const { state } = useContext(PartyContext);
@@ -19,7 +20,7 @@ const AssetList = () => {
         { title: 'Asset ID', dataIndex: ['Record', 'ID'], key: 'assetId' },
         { title: 'Color', dataIndex: ['Record', 'Color'], key: 'color' },
         { title: 'Size', dataIndex: ['Record', 'Size'], key: 'size' },
-        { title: 'Owner', dataIndex: ['Record', 'Owner'], key: 'owner' },
+        // { title: 'Owner', dataIndex: ['Record', 'Owner'], key: 'owner' },
         { title: 'Value', dataIndex: ['Record', 'AppraisedValue'], key: 'value' },
 
         {
@@ -35,6 +36,10 @@ const AssetList = () => {
             ),
         },
     ];
+
+    const addAsset = (newAsset) => {
+        setAssets((prevAssets) => [...prevAssets, newAsset]);
+    };
 
     const handleUpdateClick = (record) => {
         setCurrentAsset(record);
@@ -94,12 +99,14 @@ const AssetList = () => {
             <h1> {partyParameters.name + " As " + partyParameters.fabricOrg} </h1>
             <Table
                 columns={columns}
-                dataSource={assets}
+                dataSource={
+                assets.filter(asset => asset.Record.Owner === partyParameters.fabricOrg)
+            }
                 rowKey="assetId"
                 loading={loading}
                 style={{ marginBottom: 16 }}
             />
-            <CreateAsset />
+            <CreateAsset onAssetCreated={addAsset}/>
             <Modal
                 title={`Transfer Asset: ${currentAsset ? currentAsset.Record.ID : ''}`}
                 visible={transferModalVisible}

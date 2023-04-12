@@ -221,13 +221,14 @@ First, create the following accounts in Odoo and QuickBooks. The account names c
 
 2. Add the following configurations:
 
-| Event          | Debit Account               | Credit Account                 | Amount Field   |
-|----------------|-----------------------------|--------------------------------|----------------|
-| OrderConfirmed | Inventory (BlockTEA)        | Accounts Payable (BlockTEA)    | totalAmount    |
-| InvoicePaid    | Accounts Payable (BlockTEA) | Cash (BlockTEA)                | amount         |
-| CreateAsset    | Fabric Asset                | Opening Balance (Fabric Asset) | appraisedValue |
-| TransferAsset  | Cash (BlockTEA)             | Fabric Asset                   | appraisedValue |
-| IssueIOU       | Loan Receivable (IOU)       | Cash (BlockTEA)                | amount         |
+| Event          | Debit Account               | Credit Account                 | Amount Field    |
+|----------------|-----------------------------|--------------------------------|-----------------|
+| OrderConfirmed | Inventory (BlockTEA)        | Accounts Payable (BlockTEA)    | totalAmount     |
+| InvoicePaid    | Accounts Payable (BlockTEA) | Ether                          | amount          |
+| CreateAsset    | Fabric Asset                | Opening Balance (Fabric Asset) | appraisedValue  |
+| UpdateAsset    | Profit on Fabric Asset      | Fabric Asset                   | valueDifference |
+| TransferAsset  | Cash (BlockTEA)             | Fabric Asset                   | appraisedValue  |
+| IssueIOU       | Loan Receivable (IOU)       | Cash (BlockTEA)                | amount          |
 
 #### GreenSolutions Inc.
 

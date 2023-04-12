@@ -93,7 +93,31 @@ const IOUApp = () => {
                     <Table
                         columns={columns.filter(column => column.title !== 'Lender')}
                         dataSource={ious.filter(iou => iou.lender === ourIdentity)}
-                           rowKey="id" />
+                        rowKey="id"
+                    />
+                    <div style={{ marginBottom: 16 }}>
+                        <Select
+                            style={{ width: 200, marginRight: 16 }}
+                            placeholder="Select Borrower"
+                            onChange={onLenderChange}
+                        >
+                            {
+                                state.currentParty === "partyA" ? (
+                                    <Option value="O=PartyB,L=New York,C=US">GreenSolutions Ltd.</Option>
+                                ) : (
+                                    <Option value="O=PartyA,L=London,C=GB">BlueTech Ltd.</Option>
+                                )
+                            }
+                        </Select>
+                        <Input
+                            placeholder="Amount"
+                            style={{ width: 200, marginRight: 16 }}
+                            onChange={(e) => setAmount(e.target.value)}
+                        />
+                        <Button type="primary" onClick={issueIou} style={{marginTop: "18px"}}>
+                            Issue IOU
+                        </Button>
+                    </div>
                 </TabPane>
                 <TabPane tab="As Borrower" key="2">
                     <Table
@@ -111,29 +135,6 @@ const IOUApp = () => {
                         dataSource={ious.filter(iou => iou.borrower === ourIdentity)} rowKey="id" />
                 </TabPane>
             </Tabs>
-            <div style={{ marginBottom: 16 }}>
-                <Select
-                    style={{ width: 200, marginRight: 16 }}
-                    placeholder="Select Borrower"
-                    onChange={onLenderChange}
-                >
-                    {
-                        state.currentParty === "partyA" ? (
-                            <Option value="O=PartyB,L=New York,C=US">GreenSolutions Ltd.</Option>
-                        ) : (
-                            <Option value="O=PartyA,L=London,C=GB">BlueTech Ltd.</Option>
-                        )
-                    }
-                </Select>
-                <Input
-                    placeholder="Amount"
-                    style={{ width: 200, marginRight: 16 }}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-                <Button type="primary" onClick={issueIou}>
-                    Issue IOU
-                </Button>
-            </div>
             {
                 selectedIOU && (
                     <div style={{ marginBottom: 16 }}>
@@ -150,6 +151,7 @@ const IOUApp = () => {
             }
         </div>
     );
+
 
 };
 

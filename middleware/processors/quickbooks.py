@@ -9,6 +9,7 @@ mongo_uri = "mongodb://localhost:27017/blocktea?replicaSet=rs0"
 
 client = pymongo.MongoClient(mongo_uri)
 
+
 def get_configurations_by_vendor(vendor):
     db = client["blocktea"]  # Replace with your database name
     configurations_collection = db["configurations"]  # Replace with your configurations collection name
@@ -41,7 +42,7 @@ def save_journal_entry_id_to_event(tx_hash, vendor, id):
 
 client_id = 'ABjMlQwTPCYsCyHyO5doeT68Jyu808k8D2Q7tkOfxShLDUxBAC'
 client_secret = 'QeaLW96fisKQldOQE2r2f5z746SFq38n27pYSBjR'
-refresh_token = 'AB11689923931kYF8osGla5CX6q80BVPyvmsoRcTjJ2NmoWTXB'
+refresh_token = 'AB116900163421w4Yxp00Pwp66187QJcycAzproDUo7VbKjTk4'
 realm_id = '4620816365289145750'
 
 
@@ -73,7 +74,7 @@ rabbitmq_user = 'guest'
 rabbitmq_password = 'guest'
 
 
-def createJournalEntry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix):
+def create_journal_entry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix):
     # Refresh the access token (do this when the access token is expired)
     access_token = get_access_token()
 
@@ -136,40 +137,45 @@ channel.queue_declare(queue='quickbooks', durable=True)
 # Bind the queue to the exchange
 channel.queue_bind(exchange='blockchain-events', queue='quickbooks')
 
+
 # Define the callback function for handling messages
 def handle_message(ch, method, properties, body):
-        try:
-            event = json.loads(body)
-            event_origin = event['origin']
-            event_name = event['name']
-            config = get_configurations_by_vendor("quickbooks")
+    try:
+        event = json.loads(body)
+        event_origin = event['origin']
+        event_name = event['name']
+        config = get_configurations_by_vendor("quickbooks")
 
-            if event_name not in config:
-                return
+        if event_name not in config:
+            return
 
-            print(f"Received event {event_name} from {event_origin} with transaction ID {event['transactionId']}.")
+        print(f"Received event {event_name} from {event_origin} with transaction ID {event['transactionId']}.")
 
-            print(event)
-            amount = int(event['payload'][config[event_name]['amountField']])
-            print(amount)
-            txHash = event['transactionId']
-            eventName = event_name
-            date = datetime.now().date().isoformat()
-            debitAccountId = config[event_name]['debitAccount']['Id']
-            creditAccountId = config[event_name]['creditAccount']['Id']
-            namePrefix = event_origin
+        print(event)
+        amount = int(event['payload'][config[event_name]['amountField']])
+        print(amount)
+        txHash = event['transactionId']
+        eventName = event_name
+        date = datetime.now().date().isoformat()
+        debitAccountId = config[event_name]['debitAccount']['Id']
+        creditAccountId = config[event_name]['creditAccount']['Id']
+        namePrefix = event_origin
 
-            journal_entry_id = createJournalEntry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix)
+        journal_entry_id = create_journal_entry(amount, txHash, eventName, date, debitAccountId, creditAccountId,
+                                                namePrefix)
 
-            save_journal_entry_id_to_event(txHash, "quickbooks", journal_entry_id)
-            print(f"Created journal entry with ID {journal_entry_id} for event {eventName} with transaction ID {txHash}.")
-        except Exception as error:
-            print(f"Error processing event with delivery tag {method.delivery_tag}: {error}")
-            print(f"Event data: {body}")
-            # print the stack trace
-            import traceback
-            traceback.print_exc()
-            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+        save_journal_entry_id_to_event(txHash, "quickbooks", journal_entry_id)
+        print(f"Created journal entry with ID {journal_entry_id} for event {eventName} with transaction ID {txHash}.")
+    except Exception as error:
+        print(f"Error processing event with delivery tag {method.delivery_tag}: {error}")
+        print(f"Event data: {body}")
+        # print the stack trace
+        import traceback
+        traceback.print_exc()
+        ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+    finally:
+        # Acknowledge the message
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 # Set up the consumer

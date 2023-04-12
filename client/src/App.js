@@ -35,30 +35,12 @@ const App = () => {
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
                    width={"17%"} theme='light'>
                 <Title level={collapsed ? 4 : 2} style={{color: 'black', margin: '16px', textAlign: 'center'}}>
-                    BlockTEA Demo
+                    BlockTEA
                 </Title>
                 <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={({key}) => setSelectedKey(key)}>
                     <Menu.Item key="4" icon={<DashboardFilled style={{width: '1.5em', height: '1.5em'}}/>}>
                         Event Stream
                     </Menu.Item>
-                    <Menu.SubMenu key="ethereum" icon={<EthereumIcon style={{width: '1.5em', height: '1.5em'}}/>}
-                                  title="Ethereum">
-                        <Menu.Item key="1" icon={<FileTextFilled/>}>
-                            Purchase Order
-                        </Menu.Item>
-                    </Menu.SubMenu>
-                    <Menu.SubMenu key="fabric" icon={<img src={FabricIcon} style={{width: '1.5em', height: '1.5em'}}/>}
-                                  title="Hyperledger Fabric">
-                        <Menu.Item key="2" icon={<GoldFilled/>}>
-                            Asset Transfer
-                        </Menu.Item>
-                    </Menu.SubMenu>
-                    <Menu.SubMenu key="corda" icon={<img src={CordaIcon} style={{width: '1.5em', height: '1.5em'}}/>}
-                                  title="Corda">
-                        <Menu.Item key="3" icon={<BankFilled/>}>
-                            IOU
-                        </Menu.Item>
-                    </Menu.SubMenu>
                     <Menu.SubMenu key="sub1" icon={<AccountBookFilled style={{width: '1.5em', height: '1.5em'}}/>}
                                   title="Accounting">
                         <Menu.Item key="5" icon={<LinkOutlined/>}>
@@ -68,6 +50,25 @@ const App = () => {
                         </Menu.Item>
                         <Menu.Item key="8" icon={<SettingFilled/>}> Configuration</Menu.Item>
                     </Menu.SubMenu>
+                    <Menu.SubMenu key="ethereum" icon={<EthereumIcon style={{width: '1.1em', height: '1.1em'}}/>}
+                                  title="Ethereum">
+                        <Menu.Item key="1" icon={<FileTextFilled/>}>
+                            Purchase Order
+                        </Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu key="fabric" icon={<img src={FabricIcon} style={{width: '1.1em', height: '1.1em'}}/>}
+                                  title="Hyperledger Fabric">
+                        <Menu.Item key="2" icon={<GoldFilled/>}>
+                            Asset Transfer
+                        </Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu key="corda" icon={<img src={CordaIcon} style={{width: '1.1em', height: '1.1em'}}/>}
+                                  title="Corda">
+                        <Menu.Item key="3" icon={<BankFilled/>}>
+                            IOU
+                        </Menu.Item>
+                    </Menu.SubMenu>
+
                 </Menu>
             </Sider>
             <Layout className="site-layout">

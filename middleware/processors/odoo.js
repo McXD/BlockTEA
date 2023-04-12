@@ -66,6 +66,7 @@ async function listenToExchangeEvents(mqChannel) {
                 }
 
                 console.log(`Received event ${event.name} from ${event.origin} with transaction ID ${event.transactionId}.`)
+
                 const amount = Number(event.payload[config[event.name].amountField]);
                 const txHash = event.transactionId;
                 const eventName = event.name;
@@ -90,7 +91,7 @@ async function listenToExchangeEvents(mqChannel) {
     }, { noAck: false });
 }
 
-// In your main function, call `listenToExchangeEvents`
+
 async function main() {
     // ...
     // Connect to the MQ channel and start listening for events

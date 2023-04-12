@@ -84,13 +84,21 @@ class AssetTransferEvents extends Contract {
 	// the world state.
 	async TransferAsset(ctx, id, newOwner) {
 		const asset = await readState(ctx, id);
+		const prevOwner = asset.Owner; // Save the previous owner
 		asset.Owner = newOwner;
 		const assetBuffer = Buffer.from(JSON.stringify(asset));
 		await savePrivateData(ctx, id);
 
-		ctx.stub.setEvent('TransferAsset', assetBuffer);
+		const eventPayload = {
+			...asset,
+			PrevOwner: prevOwner, // Add the previous owner to the event payload
+		};
+		const eventBuffer = Buffer.from(JSON.stringify(eventPayload));
+		ctx.stub.setEvent('TransferAsset', eventBuffer);
+
 		return ctx.stub.putState(id, assetBuffer);
 	}
+
 
 	// ReadAsset returns the asset stored in the world state with given id.
 	async ReadAsset(ctx, id) {
@@ -140,16 +148,26 @@ class AssetTransferEvents extends Contract {
 	// UpdateAsset updates an existing asset in the world state with provided parameters.
 	async UpdateAsset(ctx, id, color, size, owner, appraisedValue) {
 		const asset = await readState(ctx, id);
+		const oldValue = asset.AppraisedValue; // Save the old appraised value
 		asset.Color = color;
 		asset.Size = size;
 		asset.Owner = owner;
 		asset.AppraisedValue = appraisedValue;
+		const valueDifference = appraisedValue - oldValue; // Calculate the difference in appraised value
+
 		const assetBuffer = Buffer.from(JSON.stringify(asset));
 		await savePrivateData(ctx, id);
 
-		ctx.stub.setEvent('UpdateAsset', assetBuffer);
+		const eventPayload = {
+			...asset,
+			ValueDifference: valueDifference, // Add the value difference to the event payload
+		};
+		const eventBuffer = Buffer.from(JSON.stringify(eventPayload));
+		ctx.stub.setEvent('UpdateAsset', eventBuffer);
+
 		return ctx.stub.putState(id, assetBuffer);
 	}
+
 
 	// DeleteAsset deletes an given asset from the world state.
 	async DeleteAsset(ctx, id) {

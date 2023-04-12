@@ -49,28 +49,40 @@ class Listener(
         // Subscribe to the vault updates
         updates.subscribe(
             { update ->
-                update.produced.forEach { stateAndRef ->
-                    val iouState = stateAndRef.state.data
-                    val eventName = if (update.consumed.isEmpty()) "IssueIOU" else "SettleIOU"
-                    val event = mapOf(
-                        "timestamp" to System.currentTimeMillis() / 1000,
-                        "origin" to "corda",
-                        "transactionId" to stateAndRef.ref.txhash.toString(),
-                        "name" to eventName,
-                        "contract" to CONTRACT,
-                        "payload" to iouState.toMap()
-                    )
-                    logger.info("New IOUState detected: $event")
-                    // Process the event further
+                val consumedStateAndRef = update.consumed.singleOrNull()
+                val producedStateAndRef = update.produced.single()
 
-                    rabbitTemplate.convertAndSend(blockchainEventsExchange.name, eventName, objectMapper.writeValueAsString(event))
-                    logger.info("Sent to MQ")
+                val consumedIOUState = consumedStateAndRef?.state?.data
+                val producedIOUState = producedStateAndRef.state.data
+
+                val eventName = if (consumedIOUState == null) "IssueIOU" else "SettleIOU"
+                val event = mutableMapOf(
+                    "timestamp" to System.currentTimeMillis() / 1000,
+                    "origin" to "corda",
+                    "transactionId" to producedStateAndRef.ref.txhash.toString(),
+                    "name" to eventName,
+                    "contract" to CONTRACT,
+                    "payload" to producedIOUState.toMap()
+                )
+
+                if (consumedIOUState != null) {
+                    val paymentAmount = producedIOUState.paidAmount - consumedIOUState.paidAmount
+                    val payload = event["payload"] as MutableMap<String, Any>
+                    payload["incrementalPayment"] = paymentAmount
                 }
+
+
+                logger.info("New IOUState detected: $event")
+                // Process the event further
+
+                rabbitTemplate.convertAndSend(blockchainEventsExchange.name, eventName, objectMapper.writeValueAsString(event))
+                logger.info("Sent to MQ")
             },
             { error ->
                 logger.error("Error in vault updates subscription: $error")
             }
         )
+
     }
 
     @PreDestroy
@@ -80,11 +92,13 @@ class Listener(
 }
 
 fun IOUState.toMap(): Map<String, Any> {
-    return mapOf(
+    val map = mutableMapOf(
         "linearId" to this.linearId.toString(),
         "lender" to this.lender.name.toString(),
         "borrower" to this.borrower.name.toString(),
         "amount" to this.amount,
         "paidAmount" to this.paidAmount
     )
+
+    return map
 }

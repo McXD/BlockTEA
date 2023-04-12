@@ -138,6 +138,7 @@ const App = () => {
                 displayDataTypes={false}
                 displayObjectSize={false}
                 enableClipboard={false}
+                name={null}
             />,
 
         },
@@ -151,6 +152,7 @@ const App = () => {
                 displayDataTypes={false}
                 displayObjectSize={false}
                 enableClipboard={false}
+                name={null}
             />,
         },
     ];

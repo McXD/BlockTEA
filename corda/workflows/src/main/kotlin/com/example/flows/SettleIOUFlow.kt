@@ -66,8 +66,8 @@ class SettleIOUFlow(private val linearId: UniqueIdentifier, private val paymentA
         val signedTx = serviceHub.signInitialTransaction(txBuilder)
 
         progressTracker.currentStep = GATHERING_SIGS
-        val borrowerSession = initiateFlow(inputIOUState.borrower)
-        val fullySignedTx = subFlow(CollectSignaturesFlow(signedTx, listOf(borrowerSession), GATHERING_SIGS.childProgressTracker()))
+        val lenderSession = initiateFlow(inputIOUState.lender)
+        val fullySignedTx = subFlow(CollectSignaturesFlow(signedTx, listOf(lenderSession), GATHERING_SIGS.childProgressTracker()))
 
         progressTracker.currentStep = FINALISING_THE_TX
         return subFlow(FinalityFlow(fullySignedTx, FINALISING_THE_TX.childProgressTracker()))
