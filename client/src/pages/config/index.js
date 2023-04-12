@@ -1,11 +1,20 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { Button, Table, Dropdown, Menu, Form, Select, Popconfirm, Row, Col, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import axios from "axios";
-import {PartyContext} from "../../context/partyContext";
+import {
+    Button,
+    Table,
+    Form,
+    Select,
+    Popconfirm,
+    message,
+    Modal,
+} from 'antd';
+import {PlusOutlined} from '@ant-design/icons';
+import axios from 'axios';
+import {PartyContext} from '../../context/partyContext';
 import config from '../../config';
 
-const { Option } = Select;
+
+const {Option} = Select;
 const eventSchemas = require('./eventSchemas.json')
 const baseUrl = config.configApiUrl;
 
@@ -20,11 +29,18 @@ const ConfigurationManager = () => {
     );
     const [selectedDebitAccount, setSelectedDebitAccount] = useState(null);
     const [selectedCreditAccount, setSelectedCreditAccount] = useState(null);
-    const { state } = useContext(PartyContext);
-    const { partyParameters } = state;
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const {state} = useContext(PartyContext);
+    const {partyParameters} = state;
     const vendor = partyParameters.aisProvider.id;
 
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
 
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     useEffect(() => {
         // Fetch debit and credit accounts from API
@@ -78,7 +94,7 @@ const ConfigurationManager = () => {
     };
 
     const addConfiguration = async (configuration) => {
-        const  configurationWithAccounts= {
+        const configurationWithAccounts = {
             ...configuration,
             debitAccount: selectedDebitAccount,
             creditAccount: selectedCreditAccount,
@@ -117,7 +133,7 @@ const ConfigurationManager = () => {
     const debitAccountMenu = (
         <Select
             showSearch
-            style={{ minWidth: '100%' }}
+            style={{minWidth: '100%'}}
             placeholder="Select a debit account"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -139,7 +155,7 @@ const ConfigurationManager = () => {
     const creditAccountMenu = (
         <Select
             showSearch
-            style={{ minWidth: '100%' }}
+            style={{minWidth: '100%'}}
             placeholder="Select a credit account"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -160,7 +176,7 @@ const ConfigurationManager = () => {
 
 
     const amountFieldMenu = (
-        <Select placeholder="Select a field" >
+        <Select placeholder="Select a field">
             {numberFields.map((attribute, index) => (
                 <Option key={index} value={attribute}>
                     {attribute}
@@ -192,6 +208,8 @@ const ConfigurationManager = () => {
             title: 'Amount Field',
             dataIndex: 'amountField',
             key: 'amountField',
+            // code font
+            render: (text) => <code>{text}</code>,
         },
         {
             title: 'Action',
@@ -212,47 +230,56 @@ const ConfigurationManager = () => {
 
     return (
         <div>
-            <Form onFinish={addConfiguration}>
-                <Form.Item name="key" hidden>
-                    <input type="hidden" />
-                </Form.Item>
-                <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={12}>
-                        <Form.Item name="event" label="Event" rules={[{ required: true, message: 'Please select an event' }]}>
-                            {eventMenu}
-                        </Form.Item>
-                        <Form.Item
-                            name="amountField"
-                            label="Amount Field"
-                            rules={[{ required: true, message: 'Please select an amount field' }]}
-                        >
-                            {amountFieldMenu}
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={24} md={12}>
-                        <Form.Item
-                            name="creditAccount"
-                            label="Credit Account"
-                            rules={[{ required: true, message: 'Please select a credit account' }]}
-                        >
-                            {creditAccountMenu}
-                        </Form.Item>
-                        <Form.Item
-                            name="debitAccount"
-                            label="Debit Account"
-                            rules={[{ required: true, message: 'Please select a debit account' }]}
-                        >
-                            {debitAccountMenu}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" icon={<PlusOutlined />}>
-                        Add Configuration
-                    </Button>
-                </Form.Item>
-            </Form>
-            <Table dataSource={configurations.filter((conf) => conf.vendor === vendor)} columns={columns} />
+            <Modal
+                title="Add Configuration"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <Form
+                    onFinish={addConfiguration}
+                    layout="horizontal"
+                    labelAlign={'left'}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    <Form.Item
+                        name="event"
+                        label="Event"
+                        rules={[{ required: true, message: 'Please select an event' }]}
+                    >
+                        {eventMenu}
+                    </Form.Item>
+                    <Form.Item
+                        name="amountField"
+                        label="Amount Field"
+                        rules={[{ required: true, message: 'Please select an amount field' }]}
+                    >
+                        {amountFieldMenu}
+                    </Form.Item>
+                    <Form.Item
+                        name="creditAccount"
+                        label="Credit Account"
+                        rules={[{ required: true, message: 'Please select a credit account' }]}
+                    >
+                        {creditAccountMenu}
+                    </Form.Item>
+                    <Form.Item
+                        name="debitAccount"
+                        label="Debit Account"
+                        rules={[{ required: true, message: 'Please select a debit account' }]}
+                    >
+                        {debitAccountMenu}
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Add Configuration
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Table dataSource={configurations.filter((conf) => conf.vendor === vendor)} columns={columns}/>
+            <Button type="primary" onClick={showModal} style={{marginTop: 16}} icon={<PlusOutlined/>}/>
         </div>
     );
 

@@ -30,7 +30,7 @@ const AssetList = () => {
             render: (_, record) => (
                 <>
                     <a onClick={() => handleUpdateClick(record)}>Update</a>
-                    <br />
+                    <span> </span>
                     <a onClick={() => handleTransferClick(record)}>Transfer</a>
                 </>
             ),
