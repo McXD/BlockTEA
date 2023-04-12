@@ -181,6 +181,15 @@ const OrderList = ({ contractAddress, role }) => {
     };
 
 
+    const layout = {
+        labelCol: {
+            span: 6,
+        },
+        wrapperCol: {
+            span: 18,
+        },
+    };
+
     return (
         <div>
             <Table dataSource={orders} columns={columns} rowKey="id" style={{marginBottom: "12px"}}/>
@@ -188,61 +197,43 @@ const OrderList = ({ contractAddress, role }) => {
                 Create Order
             </Button>}
             <Modal title="Create Order" open={open} onCancel={handleCancel} footer={null}>
-                <Form form={form} onFinish={onFinish}>
+                <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <Form {...layout} form={form} onFinish={onFinish}>
                     <Form.Item
                         label="Seller Address"
                         name="seller"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input the seller address!",
-                            },
-                        ]}
+                        rules={[{ required: true, message: "Please input the seller address!" }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         label="Product"
                         name="product"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input the product name!",
-                            },
-                        ]}
+                        rules={[{ required: true, message: "Please input the product name!" }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         label="Quantity"
                         name="quantity"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input the quantity!",
-                            },
-                        ]}
+                        rules={[{ required: true, message: "Please input the quantity!" }]}
                     >
                         <Input type="number" min="1" />
                     </Form.Item>
                     <Form.Item
                         label="Price"
                         name="price"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input the price!",
-                            },
-                        ]}
+                        rules={[{ required: true, message: "Please input the price!" }]}
                     >
                         <Input type="number" min="1" />
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
                         <Button type="primary" htmlType="submit">
                             Create Order
                         </Button>
                     </Form.Item>
                 </Form>
+                </div>
             </Modal>
         </div>
     );

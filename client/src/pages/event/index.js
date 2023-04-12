@@ -1,13 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Table} from "antd";
 import "./event.css";
 import ReactJson from 'react-json-view';
 import { CopyOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import config from "../../config";
+import {PartyContext} from "../../context/partyContext";
 
 const App = () => {
     const [data, setData] = useState([]);
+    const  { state } = useContext(PartyContext)
+    const  { partyParameters } = state
 
     useEffect(() => {
         const socket = new WebSocket(config.wsUrl);
@@ -47,7 +50,7 @@ const App = () => {
         return () => {
             socket.close();
         };
-    }, []);
+    }, [state]);
 
     const columns = [
         {
@@ -56,6 +59,7 @@ const App = () => {
             key: "timestamp",
             sorter: (a, b) => a.timestamp - b.timestamp,
             render: (timestamp) => new Date(timestamp * 1000).toLocaleString(),
+            defaultSortOrder: "descend",
         },
         // {
         //     title: "ID",
@@ -107,6 +111,22 @@ const App = () => {
                 </div>
             ),
         },
+
+        {
+            title: "Journal Entry",
+            dataIndex: "journalEntry",
+            key: "journalEntry",
+            render: (_, record) => {
+                const journalEntry = record[partyParameters.aisProvider.id];
+                if (journalEntry === undefined) {
+                    return <span>N/A</span>;
+                }
+
+                const url = partyParameters.aisProvider.journalUrlTemplate.replace('{id}', journalEntry);
+                return <a href={url} target="_blank"> {journalEntry} </a>
+            },
+        },
+
 
         {
             title: "Contract",

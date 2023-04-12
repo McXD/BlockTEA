@@ -1,5 +1,32 @@
 # BlockTEA
 
+<!-- TOC -->
+* [BlockTEA](#blocktea)
+  * [Scenarios](#scenarios)
+  * [Setting Up](#setting-up)
+    * [Blockchains](#blockchains)
+      * [Ethereum](#ethereum)
+      * [Hyperledger Fabric](#hyperledger-fabric)
+      * [Corda](#corda)
+      * [Explorers](#explorers)
+    * [Smart Contract Gateways](#smart-contract-gateways)
+      * [Hyperledger Fabric](#hyperledger-fabric-1)
+      * [Corda](#corda-1)
+    * [Blockchain Event Listeners](#blockchain-event-listeners)
+    * [Event Processors](#event-processors)
+    * [React Client](#react-client)
+    * [AIS](#ais)
+  * [Demo Flow](#demo-flow)
+    * [Create Related Accounts](#create-related-accounts)
+    * [Configure Accounting Settings](#configure-accounting-settings)
+      * [BlueTech Ltd.](#bluetech-ltd)
+      * [GreenSolutions Inc.](#greensolutions-inc)
+    * [Purchase Order](#purchase-order)
+    * [Asset Transfer](#asset-transfer)
+    * [IOU](#iou)
+  * [Work in Progress](#work-in-progress)
+<!-- TOC -->
+
 This repo is a demonstration of BlockTEA (Blockchain-based Triple-Entry Accounting). It is a proof-of-concept that shows how blockchain can be integrated with Accounting Information Systems (AIS) to provide a more secure and transparent accounting system. This is the final year project of the author for BSc. Computer Science at The Hong Kong Polytechnic University.
 
 ## Scenarios

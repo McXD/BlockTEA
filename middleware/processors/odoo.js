@@ -5,11 +5,10 @@ const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb://localhost:27017/blocktea?replicaSet=rs0'; // Replace with your MongoDB connection string
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect().then(() => console.log('MongoDB connected')).catch((err) => console.log('MongoDB connection error:', err));
 
 async function getConfigurationsByVendor(vendor) {
     try {
-        await client.connect();
-
         const db = client.db('blocktea'); // Replace with your database name
         const configurationsCollection = db.collection('configurations'); // Replace with your configurations collection name
 
@@ -23,8 +22,24 @@ async function getConfigurationsByVendor(vendor) {
         }, {});
     } catch (error) {
         console.error('Error fetching configurations:', error);
-    } finally {
-        await client.close();
+    }
+}
+
+async function saveJournalEntryIdToEvent(txHash, vendor, id) {
+    try {
+        const db = client.db('blocktea'); // Replace with your database name
+        const journalEntriesCollection = db.collection('events'); // Replace with your journal entries collection name
+
+        // Link the journal entry to the event in mongo db: transactionId -> { "odoo": id }
+        await journalEntriesCollection.updateOne(
+            { transactionId: txHash },
+            { $set: { [vendor]: id } },
+            { upsert: true }
+        );
+
+        console.log(`Saved journal entry ID ${id} to event ${txHash}.`)
+    } catch (error) {
+        console.error('Error saving journal entry ID to event:', error);
     }
 }
 
@@ -60,6 +75,9 @@ async function listenToExchangeEvents(mqChannel) {
                 const namePrefix = event.origin;
 
                 const id = await createJournalEntry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix);
+
+                await saveJournalEntryIdToEvent(txHash, 'odoo', id);
+
                 console.log(`Created journal entry with ID ${id} for event ${eventName} with transaction ID ${txHash}.`)
                 // Acknowledge the message after processing it
                 mqChannel.ack(msg);

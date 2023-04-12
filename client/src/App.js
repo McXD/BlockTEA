@@ -26,19 +26,21 @@ const {Title} = Typography;
 
 const App = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [selectedKey, setSelectedKey] = useState('8');
+    const [selectedKey, setSelectedKey] = useState('4');
     const {state} = useContext(PartyContext);
     const {partyParameters} = state;
-
 
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
-                   width={"20%"} theme='light'>
+                   width={"17%"} theme='light'>
                 <Title level={collapsed ? 4 : 2} style={{color: 'black', margin: '16px', textAlign: 'center'}}>
                     BlockTEA Demo
                 </Title>
                 <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={({key}) => setSelectedKey(key)}>
+                    <Menu.Item key="4" icon={<DashboardFilled style={{width: '1.5em', height: '1.5em'}}/>}>
+                        Event Stream
+                    </Menu.Item>
                     <Menu.SubMenu key="ethereum" icon={<EthereumIcon style={{width: '1.5em', height: '1.5em'}}/>}
                                   title="Ethereum">
                         <Menu.Item key="1" icon={<FileTextFilled/>}>
@@ -66,9 +68,6 @@ const App = () => {
                         </Menu.Item>
                         <Menu.Item key="8" icon={<SettingFilled/>}> Configuration</Menu.Item>
                     </Menu.SubMenu>
-                    <Menu.Item key="4" icon={<DashboardFilled style={{width: '1.5em', height: '1.5em'}}/>}>
-                        Event Stream
-                    </Menu.Item>
                 </Menu>
             </Sider>
             <Layout className="site-layout">

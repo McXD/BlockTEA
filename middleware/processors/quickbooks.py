@@ -22,6 +22,23 @@ def get_configurations_by_vendor(vendor):
     return configurations_map
 
 
+def save_journal_entry_id_to_event(tx_hash, vendor, id):
+    try:
+        db = client['blocktea']  # Replace with your database name
+        journal_entries_collection = db['events']  # Replace with your journal entries collection name
+
+        # Link the journal entry to the event in mongo db: transactionId -> { "odoo": id }
+        journal_entries_collection.update_one(
+            {'transactionId': tx_hash},
+            {'$set': {vendor: id}},
+        )
+
+        print(f'Saved journal entry ID {id} to event {tx_hash}.')
+
+    except Exception as error:
+        print('Error saving journal entry ID to event:', error)
+
+
 client_id = 'ABjMlQwTPCYsCyHyO5doeT68Jyu808k8D2Q7tkOfxShLDUxBAC'
 client_secret = 'QeaLW96fisKQldOQE2r2f5z746SFq38n27pYSBjR'
 refresh_token = 'AB11689923931kYF8osGla5CX6q80BVPyvmsoRcTjJ2NmoWTXB'
@@ -132,7 +149,9 @@ def handle_message(ch, method, properties, body):
 
             print(f"Received event {event_name} from {event_origin} with transaction ID {event['transactionId']}.")
 
+            print(event)
             amount = int(event['payload'][config[event_name]['amountField']])
+            print(amount)
             txHash = event['transactionId']
             eventName = event_name
             date = datetime.now().date().isoformat()
@@ -141,6 +160,8 @@ def handle_message(ch, method, properties, body):
             namePrefix = event_origin
 
             journal_entry_id = createJournalEntry(amount, txHash, eventName, date, debitAccountId, creditAccountId, namePrefix)
+
+            save_journal_entry_id_to_event(txHash, "quickbooks", journal_entry_id)
             print(f"Created journal entry with ID {journal_entry_id} for event {eventName} with transaction ID {txHash}.")
         except Exception as error:
             print(f"Error processing event with delivery tag {method.delivery_tag}: {error}")

@@ -105,7 +105,7 @@ const ConfigurationManager = () => {
 
     // Dropdown menus
     const eventMenu = (
-        <Select defaultValue={selectedEvent} onChange={handleEventChange}>
+        <Select placeholder="Select an event" onChange={handleEventChange}>
             {Object.keys(eventSchemas).map((event, index) => (
                 <Option key={index} value={event}>
                     {event}
@@ -160,7 +160,7 @@ const ConfigurationManager = () => {
 
 
     const amountFieldMenu = (
-        <Select >
+        <Select placeholder="Select a field" >
             {numberFields.map((attribute, index) => (
                 <Option key={index} value={attribute}>
                     {attribute}

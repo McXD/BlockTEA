@@ -8,7 +8,7 @@ const App = () => {
     const { partyParameters } = state;
     return (
         <div>
-            <h1> {partyParameters.name + " as "  + partyParameters.poRole} </h1>
+            <h1> Connected to {contractAddress} as {partyParameters.poRole.toUpperCase()}</h1>
             <OrderList contractAddress={contractAddress} role={partyParameters.poRole}/>
         </div>
     );
